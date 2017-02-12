@@ -26,17 +26,17 @@ body{
 }
 
 .tab {
-  float: left;
   height: 30px;
-  width: 150px;
+  min-width: 50px;
+  max-width: 150px;
   background-color: grey;
   outline: solid 1px;
-
+  flex-grow: 1;
 }
-.remaining-tab-area {
-  float: left;
+.tab-area {
+  display: flex;
   height: 30px;
-  width: calc(100% - 450px);
+  width: 100%;
   background-color: grey;
   outline: solid 1px;
 }
