@@ -24,6 +24,10 @@ body{
   height: calc(100% - 150px);
 
 }
+#canvas {
+  cursor: crosshair;
+  border: 1px solid;
+}
 
 .tab {
   height: 30px;

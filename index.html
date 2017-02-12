@@ -7,8 +7,10 @@
 
   <link href='style/style.css' rel='stylesheet' type='text/css'>
 
+  <script src="script/paint.js" type="text/javascript"></script>
+
 </head>
-<body>
+<body onload="init()">
   <div id="toolbars">
     <div class="tab-area">
       <div class="tab">
@@ -27,7 +29,7 @@
     toolbars
   </div>
   <div id="canvas-area">
-    canvas-area
+    <canvas id="canvas" height="400px" width="400px"></canvas>
   </div>
 
 </body>
