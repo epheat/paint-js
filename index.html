@@ -12,21 +12,57 @@
 </head>
 <body onload="init()">
   <div id="toolbars">
-    <div class="tab-area">
-      <div class="tab">
-        utilities
-      </div>
-      <div class="tab">
-        tools
-      </div>
-      <div class="tab">
-        colors
-      </div>
-      <div class="tab">
-        other??
-      </div>
+    <ul class="tab-area">
+      <li class="tab"><a href="javascript:void(0)" class="tablink" onclick="openTab(event, 'utilities')">
+        Utilities
+      </a></li>
+      <li class="tab"><a href="javascript:void(0)" class="tablink" onclick="openTab(event, 'tools')">
+        Tools
+      </a></li>
+      <li class="tab"><a href="javascript:void(0)" class="tablink" onclick="openTab(event, 'colors')">
+        Colors
+      </a></li>
+      <li class="tab"><a href="javascript:void(0)" class="tablink" onclick="openTab(event, 'other')">
+        Other
+      </a></li>
+    </ul>
+
+    <div id="utilities" class="tabcontent">
+      <h3> Utilities tab </h3>
     </div>
-    toolbars
+    <div id="tools" class="tabcontent">
+      <h3> Tools tab </h3>
+    </div>
+    <div id="colors" class="tabcontent">
+      <h3> Colors tab </h3>
+    </div>
+    <div id="other" class="tabcontent">
+      <h3> Other tab </h3>
+    </div>
+
+    <script>
+    function openTab(evt, tabName) {
+      // Declare all variables
+      var i, tabcontent, tablinks;
+
+      // Get all elements with class="tabcontent" and hide them
+      tabcontent = document.getElementsByClassName("tabcontent");
+      for (i = 0; i < tabcontent.length; i++) {
+          tabcontent[i].style.display = "none";
+      }
+
+      // Get all elements with class="tablinks" and remove the class "active"
+      tablinks = document.getElementsByClassName("tablinks");
+      for (i = 0; i < tablinks.length; i++) {
+          tablinks[i].className = tablinks[i].className.replace(" active", "");
+      }
+
+      // Show the current tab, and add an "active" class to the link that opened the tab
+      document.getElementById(tabName).style.display = "block";
+      evt.currentTarget.className += " active";
+    }
+    </script>
+
   </div>
   <div id="canvas-area">
     <canvas id="canvas" height="400px" width="400px"></canvas>
