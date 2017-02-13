@@ -11,7 +11,7 @@ var canvas, context,
   currX = 0,
   prevY = 0,
   currY = 0,
-  color = "black",
+  color = "red",
   line_width = 1;
 
 // init function links to canvas and sets up event listeners
@@ -70,7 +70,7 @@ function findxy(res, e) {
 
       currX = e.clientX - canvas.offsetLeft;
       currY = e.clientY - canvas.offsetTop;
-      draw();
+      draw_line();
     }
   }
 }
@@ -81,7 +81,7 @@ function draw_dot() {
   context.closePath();
 }
 
-function draw() {
+function draw_line() {
   context.beginPath();
   context.moveTo(prevX, prevY);
   context.lineTo(currX, currY);
@@ -89,4 +89,18 @@ function draw() {
   context.lineWidth = line_width;
   context.stroke();
   context.closePath();
+}
+
+// color switching functionality
+
+function selectColor(evt, color_type)
+{
+  // reset primary and secondary "selected"
+  var primary = document.getElementById("primary-color");
+  var secondary = document.getElementById("secondary-color");
+  primary.className = primary.className.replace(" selected", "");
+  secondary.className = secondary.className.replace(" selected", "");
+
+  evt.currentTarget.className += " selected";
+  color = window.getComputedStyle(evt.currentTarget).getPropertyValue("background-color");
 }
