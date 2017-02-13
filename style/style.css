@@ -4,6 +4,7 @@ html{
 }
 
 body{
+  margin: 0px;
   position: absolute;
   left: 0;
   right: 0;

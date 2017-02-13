@@ -49,8 +49,8 @@ function findxy(res, e) {
     prevX = currX;
     prevY = currY;
 
-    currX = e.clientX - canvas.offsetLeft - 8;
-    currY = e.clientY - canvas.offsetTop - 8;
+    currX = e.clientX - canvas.offsetLeft;
+    currY = e.clientY - canvas.offsetTop;
 
     draw_flag = true;
     dot_flag = true;
@@ -68,8 +68,8 @@ function findxy(res, e) {
       prevX = currX;
       prevY = currY;
 
-      currX = e.clientX - canvas.offsetLeft - 8;
-      currY = e.clientY - canvas.offsetTop - 8;
+      currX = e.clientX - canvas.offsetLeft;
+      currY = e.clientY - canvas.offsetTop;
       draw();
     }
   }
