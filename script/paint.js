@@ -14,9 +14,13 @@ var canvas, context,
   color = "black",
   line_width = 1;
 
-
 // init function links to canvas and sets up event listeners
 function init() {
+  initCanvas();
+  initTab();
+}
+
+function initCanvas() {
   canvas = document.getElementById("canvas");
   context = canvas.getContext("2d");
   w = canvas.width;
@@ -34,6 +38,10 @@ function init() {
   canvas.addEventListener("mouseout", function (e) {
     findxy('out', e)
   }, false);
+}
+
+function initTab() {
+  document.getElementById("default-open").click();
 }
 
 function findxy(res, e) {
