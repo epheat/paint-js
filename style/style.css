@@ -50,6 +50,7 @@ body{
 }
 
 .tablink {
+  font-family: 'Muli', sans-serif;
   display: block;
   /*box-shadow: 0px 0px 0px 1px #000000 inset;*/
   background-color: #80b3ff;
@@ -77,3 +78,57 @@ body{
   background-color: #8080ff;
   /*box-shadow: 0px 0px 0px 1px #000000 inset;*/
 }
+
+/* styles for color tab */
+#colors {
+  display: block;
+  width: 100%;
+  height: calc(100% - 30px);
+}
+
+#primary-and-secondary {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  width: 200px;
+  height: 100%;
+}
+
+.color-container {
+  width: 80px;
+  height: 80px;
+}
+.color-text {
+  font-family: 'Muli', sans-serif;
+  text-align: center;
+}
+.color-box {
+  margin-left: 10px;
+  margin-right: 10px;
+  width: 60px;
+  height: 60px;
+  box-shadow: 2px 2px 2px 0px #444444;
+}
+
+#primary-color {
+  display: block;
+  height: 100%;
+  width: 100%;
+  background-color: red;
+}
+
+#secondary-color {
+  display: block;
+  height: 100%;
+  width: 100%;
+  background-color: blue;
+}
+
+.selected {
+  box-shadow: 2px 2px 2px 0px #444444, 0px 0px 0px 2px #fff inset;
+}
+
+
+
+
+/* end styles for color tab */
