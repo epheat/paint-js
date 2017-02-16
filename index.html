@@ -60,10 +60,17 @@
         default color grid
       </div>
       <div id="color-sliders">
-        <!-- red blue and green sliders to fine tune your color -->
+        <!-- red blue and green sliders to fine tune selected color -->
+        <input type="range" class="color-slider" id="red-range" value="100">
+        <input type="range" class="color-slider" id="green-range" value="0">
+        <input type="range" class="color-slider" id="blue-range" value="0">
+
+
       </div>
     </div>
     <div id="other" class="tabcontent">
+
+      <a href="in_progress/color.html">Color Picker Demo</a>
 
     </div>
 
@@ -71,7 +78,7 @@
 
   </div>
   <div id="canvas-area">
-    <canvas id="canvas" height="400px" width="400px"></canvas>
+    <canvas id="canvas" height="400px" width="400px" oncontextmenu="return false;"></canvas>
   </div>
 
 </body>

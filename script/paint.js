@@ -11,7 +11,9 @@ var canvas, context,
   currX = 0,
   prevY = 0,
   currY = 0,
-  color = "red",
+  primary_color = "red",
+  secondary_color = "blue",
+  selected_color = 0, //selected_color=0 means primary is selected, selected_color=1 means secondary is selected
   line_width = 1;
 
 // init function links to canvas and sets up event listeners
@@ -58,7 +60,14 @@ function findxy(res, e) {
   if (res == 'up' || res == "out") {
     draw_flag = false;
     if (dot_flag) {
-      draw_dot();
+
+      // for left click, draw with primary. Right click, draw with secondary
+      if (e.which == 1) {
+        draw_dot(primary_color);
+      } else {
+        draw_dot(secondary_color);
+      }
+
       dot_flag = false;
     }
   }
@@ -70,22 +79,29 @@ function findxy(res, e) {
 
       currX = e.clientX - canvas.offsetLeft;
       currY = e.clientY - canvas.offsetTop;
-      draw_line();
+
+      // for left click, draw with primary. Right click, draw with secondary
+      if (e.which == 1) {
+        draw_line(primary_color);
+      } else {
+        draw_line(secondary_color);
+      }
+
     }
   }
 }
-function draw_dot() {
+function draw_dot(draw_color) {
   context.beginPath();
-  context.fillStyle = color;
+  context.fillStyle = draw_color;
   context.fillRect(currX, currY, 2, 2);
   context.closePath();
 }
 
-function draw_line() {
+function draw_line(draw_color) {
   context.beginPath();
   context.moveTo(prevX, prevY);
   context.lineTo(currX, currY);
-  context.strokeStyle = color;
+  context.strokeStyle = draw_color;
   context.lineWidth = line_width;
   context.stroke();
   context.closePath();
@@ -95,12 +111,21 @@ function draw_line() {
 
 function selectColor(evt, color_type)
 {
-  // reset primary and secondary "selected"
+  // update color box styles
   var primary = document.getElementById("primary-color");
   var secondary = document.getElementById("secondary-color");
   primary.className = primary.className.replace(" selected", "");
   secondary.className = secondary.className.replace(" selected", "");
 
-  evt.currentTarget.className += " selected";
-  color = window.getComputedStyle(evt.currentTarget).getPropertyValue("background-color");
+  var currentTarget = evt.currentTarget;
+
+  currentTarget.className += " selected";
+
+  // update selected_color variable
+  if (currentTarget.id == "primary-color") {
+    selected_color = 0;
+  } else if (currentTarget.id == "secondary-color") {
+    selected_color = 1;
+  }
+
 }
