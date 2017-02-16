@@ -81,14 +81,16 @@ body{
 
 /* styles for color tab */
 #colors {
-  display: block;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   width: 100%;
   height: calc(100% - 30px);
 }
 
 #primary-and-secondary {
   display: flex;
-  justify-content: space-around;
+  justify-content: center;
   align-items: center;
   width: 200px;
   height: 100%;
@@ -128,7 +130,11 @@ body{
   box-shadow: 2px 2px 2px 0px #444444, 0px 0px 0px 2px #fff inset;
 }
 
-
+.color-slider {
+  display: block;
+  margin-top: 10px;
+  width: 100px;
+}
 
 
 /* end styles for color tab */
