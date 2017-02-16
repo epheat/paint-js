@@ -1,0 +1,77 @@
+<!--
+Evan Heaton
+Paint.js - color-sliders.html
+2/16/2017
+-->
+
+<html>
+  <head>
+    <title>
+      Vue.js color picker
+    </title>
+
+    <!-- style sliders -->
+    <link href='style/slider-style.css' rel='stylesheet' type='text/css'>
+
+
+  </head>
+
+
+
+  <body>
+
+    <div id="color_swatch_selector">
+
+      <!--
+      <color-swatch :swatch-name="primary_swatch_name" :channel-r-prop="red" :channel-g-prop="green" :channel-b-prop="blue" @swatchselected="selectSwatch"  ></color-swatch>
+      <color-swatch :swatch-name="secondary_swatch_name" :channel-r-prop="red" :channel-g-prop="green" :channel-b-prop="blue" @swatchselected="selectSwatch"  ></color-swatch>
+       -->
+
+      <color-sliders :channel-r-prop="red" :channel-g-prop="green" :channel-b-prop="blue" @colorchanged="updateColors"></color-sliders>
+
+    </div>
+
+    <!-- import Vue itself -->
+    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+    <!-- import color-sliders component -->
+    <script src="color-sliders.js" type="text/javascript"></script>
+    <!-- import color-swatch component -->
+
+    <script>
+
+      var vm = new Vue({
+        el: '#color_swatch_selector',
+
+        data: {
+          red: 0,
+          green: 0,
+          blue: 0
+        },
+
+        methods: {
+          updateColors: function(e) {
+            this.red = e.R;
+            this.green = e.G;
+            this.blue = e.B;
+          },
+
+          selectSwatch: function() {
+
+          }
+
+
+        },
+
+        computed: {
+            // colorStyle is used in the stylesheet for this component
+            colorStyle: function(){
+              return 'rgba('+ this.red+','+ this.green+','+ this.blue+', 1)';
+            }
+        }
+
+
+      })
+
+    </script>
+  </body>
+</html>
