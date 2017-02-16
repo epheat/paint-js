@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>
+    Vue.js color picker
+  </title>
+</head>
+
+<body>
+
+<div id="color_swatch_selector">
+  <div style=" position:relative; width:100px; height:100px; border:1px solid black;" v-bind:style="{ backgroundColor: colorStyle }" class="color_swatch">
+
+  </div>
+  <div class="debug_window">
+    {{ channel_R }},{{ channel_G }},{{ channel_B }}
+  </div>
+  <div class="controllers">
+    <input type="range" v-model="channel_R" min="0" max="255" > Red <br>
+    <input type="range" v-model="channel_G" min="0" max="255" > Green <br>
+    <input type="range" v-model="channel_B" min="0" max="255" > Blue <br>
+    <input type="range" v-model="brightness" min="0" max="255" > Brightness <br>
+  </div>
+
+</div>
+
+<script src="https://unpkg.com/vue/dist/vue.js"></script>
+
+<script>
+
+  // TODO: Make this color swatch using components
+
+  var aw = new Vue({
+
+    // "el" is which element on the page this Vue is attached to.
+    el: '#color_swatch_selector',
+    data: {
+      channel_R:0,
+      channel_G:0,
+      channel_B:0,
+      ratios: [0, 0, 0],
+      brightness:0,
+      rgba:'rgba(255,0,0,1)'
+
+    },
+
+    watch: {
+      channel_R: function() {
+        this.updateRatios();
+        this.updateBrightness();
+      },
+      channel_G: function() {
+        this.updateRatios();
+        this.updateBrightness();
+      },
+      channel_B: function() {
+        this.updateRatios();
+        this.updateBrightness();
+      },
+      brightness: function() {
+        this.updateChannels();
+      }
+    },
+
+    methods: {
+      updateRatios: function() {
+        var max = Math.max(this.channel_R, this.channel_G, this.channel_B);
+        if (max == 0) max = 1; // to prevent divide by zero errors
+        this.ratios[0] = this.channel_R / max;
+        this.ratios[1] = this.channel_G / max;
+        this.ratios[2] = this.channel_B / max;
+      },
+      updateBrightness: function() {
+        this.brightness = Math.max(this.channel_R, this.channel_G, this.channel_B);
+      },
+      updateChannels: function() {
+        this.channel_R = Math.round(this.ratios[0] * this.brightness);
+        this.channel_G = Math.round(this.ratios[1] * this.brightness);
+        this.channel_B = Math.round(this.ratios[2] * this.brightness);
+      }
+    },
+
+
+    computed:{
+        // colorStyle is used in the stylesheet for this component
+        colorStyle: function(){
+          return 'rgba('+ this.channel_R+','+ this.channel_G+','+ this.channel_B+', 1)';
+        }
+    }
+  })
+</script>
+<body>
