@@ -1,0 +1,13 @@
+2/16/2016
+Javascript Users Group Meeting
+Making Electron Applications
+
+Electron
+- built on top of nodejs, leveraging the chromium browser
+- appearance of native without the hassle of native
+
+need to learn: npm, node
+
+Structure:
+- it all starts with node
+- ability to use node-style require statements in javascript, because npm install will load everything for you

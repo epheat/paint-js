@@ -8,7 +8,7 @@ Vue.component('color-sliders', {
   // data must be a function, to keep local variables separate
   data: function() {
     return {
-      // in order to not mutate props, make local variables that have prop values as their initial values
+
       channel_R: this.channelRProp,
       channel_G: this.channelGProp,
       channel_B: this.channelBProp,
@@ -48,6 +48,15 @@ Vue.component('color-sliders', {
     }
   },
 
+  computed: {
+    color_style: function() {
+      // color_style is used in the stylesheet for this component
+      return "rgba(" + this.channel_R + ", " + this.channel_G + ", " + this.channel_B + ", 1)";
+      this.emitColorChange();
+    }
+
+  },
+
   methods: {
     // TODO: updateRatios should really only be called when the top 3 (RGB) sliders are changed
     updateRatios: function() {
@@ -81,7 +90,7 @@ Vue.component('color-sliders', {
       this.channel_B = Math.round(255 - this.bright_ratios[2] * (255 - this.brightness));
     },
     emitColorChange: function() {
-      this.$emit('colorchanged', {R:this.channel_R, G:this.channel_G, B:this.channel_B} );
+      this.$emit('colorchanged', {color_style: this.color_style, R: this.channel_R, G: this.channel_G, B: this.channel_B} );
     }
   }
 
