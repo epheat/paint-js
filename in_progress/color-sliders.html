@@ -12,6 +12,13 @@ Paint.js - color-sliders.html
 
     <!-- style sliders -->
     <link href='style/slider-style.css' rel='stylesheet' type='text/css'>
+    <style media="screen">
+      .container {
+        position: relative;
+        top: 120px;
+        width: 300px;
+      }
+    </style>
 
 
   </head>
@@ -22,12 +29,16 @@ Paint.js - color-sliders.html
 
     <div id="color_swatch_selector">
 
+      <div style=" width:100px; height:100px; border:1px solid black;" v-bind:style="{ backgroundColor: color_style }" class="color_swatch">
+
       <!--
       <color-swatch :swatch-name="primary_swatch_name" :channel-r-prop="red" :channel-g-prop="green" :channel-b-prop="blue" @swatchselected="selectSwatch"  ></color-swatch>
       <color-swatch :swatch-name="secondary_swatch_name" :channel-r-prop="red" :channel-g-prop="green" :channel-b-prop="blue" @swatchselected="selectSwatch"  ></color-swatch>
        -->
+      <div class="container">
+        <color-sliders :channel-r-prop="red" :channel-g-prop="green" :channel-b-prop="blue" @colorchanged="updateColors"></color-sliders>
+      </div>
 
-      <color-sliders :channel-r-prop="red" :channel-g-prop="green" :channel-b-prop="blue" @colorchanged="updateColors"></color-sliders>
 
     </div>
 
@@ -45,7 +56,8 @@ Paint.js - color-sliders.html
         data: {
           red: 0,
           green: 0,
-          blue: 0
+          blue: 0,
+          color_style: "rgba(0, 0, 0, 1)"
         },
 
         methods: {
@@ -53,20 +65,12 @@ Paint.js - color-sliders.html
             this.red = e.R;
             this.green = e.G;
             this.blue = e.B;
+            this.color_style = e.color_style;
           },
 
           selectSwatch: function() {
 
           }
-
-
-        },
-
-        computed: {
-            // colorStyle is used in the stylesheet for this component
-            colorStyle: function(){
-              return 'rgba('+ this.red+','+ this.green+','+ this.blue+', 1)';
-            }
         }
 
 
