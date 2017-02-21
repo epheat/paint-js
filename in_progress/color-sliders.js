@@ -1,17 +1,18 @@
 // color-sliders is an input component that can edit RGB values using 5 sliders.
+// KNOWN BUG: first time switching colors when only one RGB slider has been changed changes the selected color (?????)
 Vue.component('color-sliders', {
   template: `<div class="controllers"><input class="red-slider" type="range" v-model="channel_R" min="0" max="255" >Red<br><input class="green-slider" type="range" v-model="channel_G" min="0" max="255" >Green<br><input class="blue-slider" type="range" v-model="channel_B" min="0" max="255" >Blue<br><input class="darkness-slider" type="range" v-model="darkness" min="0" max="255" >Darkness<br><input class="brightness-slider" type="range" v-model="brightness" min="0" max="255" >Brightness<br></div>`,
 
   // props are local variables that receive changes from the parent element
-  props: ['channelRProp', 'channelGProp', 'channelBProp'],
+  props: ['colorProp', 'refreshMessage'],
 
   // data must be a function, to keep local variables separate
   data: function() {
     return {
 
-      channel_R: this.channelRProp,
-      channel_G: this.channelGProp,
-      channel_B: this.channelBProp,
+      channel_R: this.colorProp[0],
+      channel_G: this.colorProp[1],
+      channel_B: this.colorProp[2],
 
       dark_ratios: [0, 0, 0],
       bright_ratios: [0, 0, 0],
@@ -22,6 +23,11 @@ Vue.component('color-sliders', {
 
   // watch causes updates every time certain variables are changed
   watch: {
+    refreshMessage: function() {
+      if (this.refreshMessage)
+        this.refresh();
+    },
+
     channel_R: function() {
       this.updateRatios();
       this.updateDarkness();
@@ -91,6 +97,12 @@ Vue.component('color-sliders', {
     },
     emitColorChange: function() {
       this.$emit('colorchanged', {color_style: this.color_style, R: this.channel_R, G: this.channel_G, B: this.channel_B} );
+    },
+    refresh: function() {
+      this.channel_R = this.colorProp[0];
+      this.channel_G = this.colorProp[1];
+      this.channel_B = this.colorProp[2];
+      this.$emit('refreshed');
     }
   }
 
