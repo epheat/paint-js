@@ -10,43 +10,50 @@ Paint.js - color-sliders.html
       Vue.js color picker
     </title>
 
+    <!-- import bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
     <!-- style sliders -->
     <link href='style/slider-style.css' rel='stylesheet' type='text/css'>
-    <style media="screen">
-      .container {
-        position: relative;
-        top: 120px;
-        width: 300px;
-      }
-    </style>
-
-
-  </head>
-
-
-
-  <body>
-
-    <div id="color_swatch_selector">
-
-      <div style=" width:100px; height:100px; border:1px solid black;" v-bind:style="{ backgroundColor: color_style }" class="color_swatch">
-
-      <!--
-      <color-swatch :swatch-name="primary_swatch_name" :channel-r-prop="red" :channel-g-prop="green" :channel-b-prop="blue" @swatchselected="selectSwatch"  ></color-swatch>
-      <color-swatch :swatch-name="secondary_swatch_name" :channel-r-prop="red" :channel-g-prop="green" :channel-b-prop="blue" @swatchselected="selectSwatch"  ></color-swatch>
-       -->
-      <div class="container">
-        <color-sliders :channel-r-prop="red" :channel-g-prop="green" :channel-b-prop="blue" @colorchanged="updateColors"></color-sliders>
-      </div>
-
-
-    </div>
+    <!-- style swatches -->
+    <link href='style/swatch-style.css' rel='stylesheet' type='text/css'>
 
     <!-- import Vue itself -->
     <script src="https://unpkg.com/vue/dist/vue.js"></script>
     <!-- import color-sliders component -->
     <script src="color-sliders.js" type="text/javascript"></script>
     <!-- import color-swatch component -->
+    <script src="color-swatch.js" type="text/javascript"></script>
+
+  </head>
+
+
+  <body>
+
+    <div id="color_swatch_selector">
+      
+      <color-swatch
+        :swatch-name="primary_swatch_name"
+        :selected="primary_selected"
+        :color-style="primary_style"
+        @selectswatch="selectSwatch">
+      </color-swatch>
+      <color-swatch
+        :swatch-name="secondary_swatch_name"
+        :selected="secondary_selected"
+        :color-style="secondary_style"
+        @selectswatch="selectSwatch">
+      </color-swatch>
+
+      <color-sliders
+        :color-prop="slider_color"
+        :refresh-message="refreshNeeded"
+        @colorchanged="updateColors"
+        @refreshed="refreshComplete">
+      </color-sliders>
+
+
+    </div>
 
     <script>
 
@@ -54,26 +61,65 @@ Paint.js - color-sliders.html
         el: '#color_swatch_selector',
 
         data: {
-          red: 0,
-          green: 0,
-          blue: 0,
-          color_style: "rgba(0, 0, 0, 1)"
+          slider_color: [0, 0, 0],
+          primary_color: [0, 0, 0],
+          secondary_color: [0, 0, 0],
+          primary_swatch_name: "Primary",
+          secondary_swatch_name: "Secondary",
+          primary_selected: true,
+          secondary_selected: false,
+
+          refreshNeeded: false,
+
+          slider_style: "rgba(0, 0, 0, 1)",
+          primary_style: "rgba(0, 0, 0, 1)",
+          secondary_style: "rgba(0, 0, 0, 1)"
         },
 
         methods: {
           updateColors: function(e) {
-            this.red = e.R;
-            this.green = e.G;
-            this.blue = e.B;
-            this.color_style = e.color_style;
+            this.slider_color[0] = e.R;
+            this.slider_color[1] = e.G;
+            this.slider_color[2] = e.B;
+
+            if (this.primary_selected) {
+              for (var i=0; i<3; i++) { this.primary_color[i] = this.slider_color[i]; }
+              this.primary_style = this.slider_style;
+            } else if (this.secondary_selected) {
+              for (var i=0; i<3; i++) { this.secondary_color[i] = this.slider_color[i]; }
+              this.secondary_style = this.slider_style;
+            } else {
+              console.log("wat");
+            }
+
+            this.slider_style = e.color_style;
           },
 
-          selectSwatch: function() {
+          refreshComplete: function() {
+            this.refreshNeeded = false;
+          },
+
+          selectSwatch: function(e) {
+            // make all "color-swatch" selected values false, except for the swatch that was clicked.
+            // Then, send the color values saved in the swatch to the sliders
+            if (e.name == this.primary_swatch_name) {
+              for (var i=0; i<3; i++) { this.slider_color[i] = this.primary_color[i]; }
+              this.primary_selected = true;
+              this.secondary_selected = false;
+
+            } else if (e.name == this.secondary_swatch_name) {
+              for (var i=0; i<3; i++) { this.slider_color[i] = this.secondary_color[i]; }
+              this.primary_selected = false;
+              this.secondary_selected = true;
+
+            } else {
+              console.log("wat");
+            }
+
+            this.refreshNeeded = true;
 
           }
         }
-
-
       })
 
     </script>
