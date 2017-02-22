@@ -31,25 +31,29 @@ Paint.js - color-sliders.html
   <body>
 
     <div id="color_swatch_selector">
-      
+
       <color-swatch
         :swatch-name="primary_swatch_name"
         :selected="primary_selected"
         :color-style="primary_style"
-        @selectswatch="selectSwatch">
+        @selectswatch="selectPrimarySwatch">
       </color-swatch>
       <color-swatch
         :swatch-name="secondary_swatch_name"
         :selected="secondary_selected"
         :color-style="secondary_style"
-        @selectswatch="selectSwatch">
+        @selectswatch="selectSecondarySwatch">
       </color-swatch>
 
       <color-sliders
-        :color-prop="slider_color"
-        :refresh-message="refreshNeeded"
-        @colorchanged="updateColors"
-        @refreshed="refreshComplete">
+        :color-prop="primary_color"
+        :visible="primary_selected"
+        @colorchanged="updatePrimaryColor">
+      </color-sliders>
+      <color-sliders
+        :color-prop="secondary_color"
+        :visible="secondary_selected"
+        @colorchanged="updateSecondaryColor">
       </color-sliders>
 
 
@@ -61,7 +65,6 @@ Paint.js - color-sliders.html
         el: '#color_swatch_selector',
 
         data: {
-          slider_color: [0, 0, 0],
           primary_color: [0, 0, 0],
           secondary_color: [0, 0, 0],
           primary_swatch_name: "Primary",
@@ -69,55 +72,31 @@ Paint.js - color-sliders.html
           primary_selected: true,
           secondary_selected: false,
 
-          refreshNeeded: false,
-
-          slider_style: "rgba(0, 0, 0, 1)",
           primary_style: "rgba(0, 0, 0, 1)",
           secondary_style: "rgba(0, 0, 0, 1)"
         },
 
         methods: {
-          updateColors: function(e) {
-            this.slider_color[0] = e.R;
-            this.slider_color[1] = e.G;
-            this.slider_color[2] = e.B;
-
-            if (this.primary_selected) {
-              for (var i=0; i<3; i++) { this.primary_color[i] = this.slider_color[i]; }
-              this.primary_style = this.slider_style;
-            } else if (this.secondary_selected) {
-              for (var i=0; i<3; i++) { this.secondary_color[i] = this.slider_color[i]; }
-              this.secondary_style = this.slider_style;
-            } else {
-              console.log("wat");
-            }
-
-            this.slider_style = e.color_style;
+          updatePrimaryColor: function(e) {
+            this.primary_color[0] = e.R;
+            this.primary_color[1] = e.G;
+            this.primary_color[2] = e.B;
+            this.primary_style = e.color_style;
+          },
+          updateSecondaryColor: function(e) {
+            this.secondary_color[0] = e.R;
+            this.secondary_color[1] = e.G;
+            this.secondary_color[2] = e.B;
+            this.secondary_style = e.color_style;
           },
 
-          refreshComplete: function() {
-            this.refreshNeeded = false;
+          selectPrimarySwatch: function(e) {
+            this.primary_selected = true;
+            this.secondary_selected = false;
           },
-
-          selectSwatch: function(e) {
-            // make all "color-swatch" selected values false, except for the swatch that was clicked.
-            // Then, send the color values saved in the swatch to the sliders
-            if (e.name == this.primary_swatch_name) {
-              for (var i=0; i<3; i++) { this.slider_color[i] = this.primary_color[i]; }
-              this.primary_selected = true;
-              this.secondary_selected = false;
-
-            } else if (e.name == this.secondary_swatch_name) {
-              for (var i=0; i<3; i++) { this.slider_color[i] = this.secondary_color[i]; }
-              this.primary_selected = false;
-              this.secondary_selected = true;
-
-            } else {
-              console.log("wat");
-            }
-
-            this.refreshNeeded = true;
-
+          selectSecondarySwatch: function(e) {
+            this.secondary_selected = true;
+            this.primary_selected = false;
           }
         }
       })

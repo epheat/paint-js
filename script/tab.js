@@ -1,3 +1,11 @@
+function init() {
+  initTab();
+}
+
+function initTab() {
+  document.getElementById("default-open").click();
+}
+
 function openTab(evt, tabName) {
   // Declare all variables
   var i, tabcontent, tablinks;
