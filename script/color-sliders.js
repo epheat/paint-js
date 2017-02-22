@@ -1,5 +1,4 @@
 // color-sliders is an input component that can edit RGB values using 5 sliders.
-// KNOWN BUG: first time switching colors when only one RGB slider has been changed changes the selected color (?????)
 Vue.component('color-sliders', {
   template: `<div class="controllers" v-bind:style={display:display_style}><input class="red-slider" type="range" v-model="channel_R" min="0" max="255" >Red<br><input class="green-slider" type="range" v-model="channel_G" min="0" max="255" >Green<br><input class="blue-slider" type="range" v-model="channel_B" min="0" max="255" >Blue<br><input class="darkness-slider" type="range" v-model="darkness" min="0" max="255" >Darkness<br><input class="brightness-slider" type="range" v-model="brightness" min="0" max="255" >Brightness<br></div>`,
 
