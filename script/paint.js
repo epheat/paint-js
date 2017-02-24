@@ -2,6 +2,8 @@
 // CS498 - Group 3
 // paint.js
 
+// OBSOLETE
+
 // Much of this code was laid out with the help of this page: http://stackoverflow.com/questions/2368784/draw-on-html5-canvas-using-a-mouse
 
 var canvas, context,
