@@ -1,6 +1,7 @@
 // epheat
 // CS 498 Group 3
 // Paint.js
+// <color-sliders>
 
 // color-sliders is an input component that can edit RGB values using 5 sliders.
 Vue.component('color-sliders', {

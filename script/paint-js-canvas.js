@@ -1,5 +1,12 @@
+// epheat
+// CS 498 Group 3
+// Paint.js
+// <paint-js-canvas>
+
 // paint-js-canvas is a component that draws on a canvas according to primary/secondary colors and the current tool
 Vue.component('paint-js-canvas', {
+
+  // HTML template of the component
   template: `<canvas id="canvas" ref="canvas" height="400px" width="400px" oncontextmenu="return false;" @mousedown="mouseDown" @mousemove="mouseMove" @mouseup="mouseUp" @mouseout="mouseOut"></canvas>`,
 
   // props are local variables that receive changes from the parent element
@@ -34,6 +41,7 @@ Vue.component('paint-js-canvas', {
     this.h = this.canvas.height;
   },
 
+  // Component methods
   methods: {
 
     mouseDown: function(e) {
