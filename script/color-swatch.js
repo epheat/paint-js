@@ -1,6 +1,7 @@
 // epheat
 // CS 498 Group 3
 // Paint.js
+// <color-swatch>
 
 // color-swatch is a component that receives an rgb value and can be selected/deselected
 Vue.component('color-swatch', {
@@ -21,7 +22,7 @@ Vue.component('color-swatch', {
   // Component methods
   methods: {
     selectSwatch: function() {
-      this.$emit('selectswatch', {name: this.swatchName});
+      this.$emit('selectswatch');
     }
   },
 
