@@ -1,11 +1,17 @@
+// epheat
+// CS 498 Group 3
+// Paint.js
+
 // color-sliders is an input component that can edit RGB values using 5 sliders.
 Vue.component('color-sliders', {
+
+  // HTML template of the component
   template: `<div class="controllers" v-bind:style={display:display_style}><input class="red-slider" type="range" v-model="channel_R" min="0" max="255" >Red<br><input class="green-slider" type="range" v-model="channel_G" min="0" max="255" >Green<br><input class="blue-slider" type="range" v-model="channel_B" min="0" max="255" >Blue<br><input class="darkness-slider" type="range" v-model="darkness" min="0" max="255" >Darkness<br><input class="brightness-slider" type="range" v-model="brightness" min="0" max="255" >Brightness<br></div>`,
 
   // props are local variables that receive changes from the parent element
   props: ['colorProp', 'visible'],
 
-  // data must be a function, to keep local variables separate
+  // in components, data must be a function, to keep local variables separate
   data: function() {
     return {
 
@@ -20,7 +26,7 @@ Vue.component('color-sliders', {
     }
   },
 
-  // watch causes updates every time certain variables are changed
+  // watch runs a function every time a specified variable is updated
   watch: {
     channel_R: function() {
       this.updateRatios();
@@ -48,6 +54,7 @@ Vue.component('color-sliders', {
     }
   },
 
+  // computed variables are recalculated any time its dependencies are updated
   computed: {
     color_style: function() {
       // color_style is used in the stylesheet for this component
@@ -64,6 +71,7 @@ Vue.component('color-sliders', {
 
   },
 
+  // Component methods
   methods: {
     // TODO: updateRatios should really only be called when the top 3 (RGB) sliders are changed
     updateRatios: function() {

@@ -1,24 +1,31 @@
-
+// epheat
+// CS 498 Group 3
+// Paint.js
 
 // color-swatch is a component that receives an rgb value and can be selected/deselected
 Vue.component('color-swatch', {
+
+  // HTML template of the component
   template: `<div class="color-container"><div class="color-text">{{swatchName}}</div><div class="color-box"><a href="javascript:void(0)" class="color-selector" v-bind:style="styleObject" v-on:click="selectSwatch"></a></div></div>`,
 
   // props are local variables that receive changes from the parent element
   props: ['swatchName', 'selected', 'colorStyle'],
 
-  // data must be a function, to keep local variables separate
+  // in components, data must be a function, to keep local variables separate
   data: function() {
     return {
 
     }
   },
 
+  // Component methods
   methods: {
     selectSwatch: function() {
       this.$emit('selectswatch', {name: this.swatchName});
     }
   },
+
+  // computed variables are recalculated any time its dependencies are updated
   computed: {
     boxShadowStyle: function() {
       if (this.selected) {
