@@ -1,4 +1,4 @@
-//garrett was here
+//garrett was here. and still is
 // epheat
 // CS 498 Group 3
 // Paint.js
