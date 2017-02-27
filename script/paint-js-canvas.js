@@ -7,7 +7,7 @@
 Vue.component('paint-js-canvas', {
 
   // HTML template of the component
-  template: `<canvas id="canvas" ref="canvas" height="400px" width="400px" oncontextmenu="return false;" @mousedown="mouseDown" @mousemove="mouseMove" @mouseup="mouseUp" @mouseout="mouseOut"></canvas>`,
+  template: `<div><canvas id="canvas" ref="canvas" height="400px" width="400px" oncontextmenu="return false;" @mousedown="mouseDown" @mousemove="mouseMove" @mouseup="mouseUp" @mouseout="mouseOut"></canvas><br>prevX: {{prevX}} prevY: {{prevY}}   currX: {{currX}} currY: {{currY}}</div>`,
 
   // props are local variables that receive changes from the parent element
   // TODO: add 'tool' as a prop
@@ -28,7 +28,7 @@ Vue.component('paint-js-canvas', {
       h: 0,
       line_width: 2,
 
-      imgData: []
+      imgData: null
 
     }
   },
@@ -39,76 +39,89 @@ Vue.component('paint-js-canvas', {
     this.context = this.canvas.getContext("2d");
     this.w = this.canvas.width;
     this.h = this.canvas.height;
+
+    this.imgData = this.context.getImageData(0, 0, this.w, this.h);
+    this.context.imageSmoothingEnabled = false;
   },
 
   // Component methods
   methods: {
 
     mouseDown: function(e) {
+
+      // draw initial dot
+      if (e.which == 1) {
+        this.updatePixel(this.currX, this.currY, this.primaryColor);
+      } else {
+        this.updatePixel(this.currX, this.currY, this.secondaryColor);
+      }
+
+      this.draw_flag = true;
+    },
+    mouseMove: function(e) {
+
       this.prevX = this.currX;
       this.prevY = this.currY;
 
-      this.currX = e.clientX - this.canvas.offsetLeft;
-      this.currY = e.clientY - this.canvas.offsetTop;
+      this.currX = e.pageX - this.canvas.offsetLeft;
+      this.currY = e.pageY - this.canvas.offsetTop;
 
-      this.draw_flag = true;
-      this.dot_flag = true;
-    },
-    mouseMove: function(e) {
-      this.dot_flag = false;
       if (this.draw_flag) {
-        this.prevX = this.currX;
-        this.prevY = this.currY;
-
-        this.currX = e.clientX - this.canvas.offsetLeft;
-        this.currY = e.clientY - this.canvas.offsetTop;
-
         // for left click, draw with primary. Right click, draw with secondary
         if (e.which == 1) {
-          this.draw_line(this.primaryColorStyle);
+          this.draw_line(this.primaryColor);
         } else {
-          this.draw_line(this.secondaryColorStyle);
+          this.draw_line(this.secondaryColor);
         }
 
       }
     },
     mouseUp: function(e) {
       this.draw_flag = false;
-      if (this.dot_flag) {
-
-        // for left click, draw with primary. Right click, draw with secondary
-        if (e.which == 1) {
-          this.draw_dot(this.primaryColorStyle);
-        } else {
-          this.draw_dot(this.secondaryColorStyle);
-        }
-
-        this.dot_flag = false;
-      }
     },
     mouseOut: function(e) {
       this.draw_flag = false;
     },
 
-    draw_dot: function(draw_color) {
-      this.context.beginPath();
-      this.context.fillStyle = draw_color;
-      this.context.arc(this.currX, this.currY, 2, 0, 2*Math.PI);
-      this.context.fill();
-      this.context.closePath();
+    draw_line: function(draw_color) {
+      // Draw a raster line from (prevX, prevY) to (currX, currY) using Bresenham's line algorithm
+      // https://en.wikipedia.org/wiki/Bresenham's_line_algorithm
+      // http://stackoverflow.com/questions/4672279/bresenham-algorithm-in-javascript
+
+      var dx = Math.abs(this.currX - this.prevX);
+      var dy = Math.abs(this.currY - this.prevY);
+      var sx = (this.prevX < this.currX) ? 1 : -1;
+      var sy = (this.prevY < this.currY) ? 1 : -1;
+      var err = dx - dy;
+
+      while(true){
+        this.updatePixel(this.prevX, this.prevY, draw_color);
+
+        if ((this.prevX==this.currX) && (this.prevY==this.currY)) break;
+        var e2 = 2*err;
+        if (e2 >-dy) {
+          err -= dy;
+          this.prevX += sx;
+        }
+        if (e2 < dx) {
+          err += dx;
+          this.prevY += sy;
+        }
+      }
+
+
     },
 
-    draw_line: function(draw_color) {
-      this.context.beginPath();
-      this.context.moveTo(this.prevX, this.prevY);
-      this.context.lineTo(this.currX, this.currY);
-      this.context.strokeStyle = draw_color;
-      this.context.lineWidth = this.line_width;
-      this.context.stroke();
-      this.context.closePath();
+    updatePixel(x, y, draw_color) {
+      var pixel = this.context.createImageData(1,1);
+      // set the pixel to the draw_color
+      for (var i=0; i<3; i++) {
+        pixel.data[i] = draw_color[i];
+      }
+      // set alpha value for pixel to 255;
+      pixel.data[3] = 255;
+      this.context.putImageData(pixel, x, y);
     }
-
-
 
   },
   computed: {
