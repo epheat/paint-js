@@ -11,7 +11,7 @@ Vue.component('paint-js-canvas', {
 
   // props are local variables that receive changes from the parent element
   // TODO: add 'tool' as a prop
-  props: ['primaryColor', 'secondaryColor', 'primaryColorStyle', 'secondaryColorStyle'],
+  props: ['primaryColor', 'secondaryColor', 'primaryColorStyle', 'secondaryColorStyle', 'clearMessage'],
 
   // data must be a function, to keep local variables separate
   data: function() {
@@ -112,7 +112,7 @@ Vue.component('paint-js-canvas', {
 
     },
 
-    updatePixel(x, y, draw_color) {
+    updatePixel: function(x, y, draw_color) {
       var pixel = this.context.createImageData(1,1);
       // set the pixel to the draw_color
       for (var i=0; i<3; i++) {
@@ -121,9 +121,22 @@ Vue.component('paint-js-canvas', {
       // set alpha value for pixel to 255;
       pixel.data[3] = 255;
       this.context.putImageData(pixel, x, y);
+    },
+
+    clearCanvas: function() {
+      var new_canvas = this.context.createImageData(this.w, this.h);
+      this.context.putImageData(new_canvas, 0, 0);
     }
 
   },
+
+  watch: {
+    clearMessage: function() {
+      this.clearCanvas();
+      this.$emit('cleared');
+    }
+  },
+
   computed: {
 
   }
