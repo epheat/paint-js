@@ -19,8 +19,7 @@
   <link href="https://fonts.googleapis.com/css?family=Muli" rel="stylesheet">
 
   <!-- include scripts -->
-  <!-- <script src="script/paint.js" type="text/javascript"></script> -->
-  <script src="script/tab.js" type="text/javascript"></script>
+
   <!-- import Vue itself -->
   <script src="https://unpkg.com/vue/dist/vue.js"></script>
   <!-- import color-sliders component -->
@@ -34,51 +33,30 @@
 
 
 </head>
-<body onload="init()">
+<body>
   <div id="paint-js">
     <div id="toolbars">
+
       <ul class="tab-area">
-        <li class="tab"><a href="javascript:void(0)" class="tablink" onclick="openTab(event, 'utilities')" id="default-open">
-          Utilities
-        </a></li>
-        <li class="tab"><a href="javascript:void(0)" class="tablink" onclick="openTab(event, 'tools')">
-          Tools
-        </a></li>
-        <li class="tab"><a href="javascript:void(0)" class="tablink" onclick="openTab(event, 'colors')">
-          Colors
-        </a></li>
-        <li class="tab"><a href="javascript:void(0)" class="tablink" onclick="openTab(event, 'other')">
-          Other
+        <li class="tab" v-for="(tab, index) in tabs"><a href="javascript:void(0)" class="tablink" :class="{active: tab_selected == index}" @click="openTab(index)">
+          {{ tabs[index] }}
         </a></li>
       </ul>
 
-      <div id="utilities" class="tabcontent">
+      <div id="utilities" class="tabcontent" v-if="tab_selected == 0">
         <utility-button
-          :button-name="utility_buttons[0]"
+          v-for="(button, index) in utility_buttons"
+          :key="button"
+          :button-name="button"
           @buttonpress="clearCanvas" >
         </utility-button>
-        <utility-button
-          :button-name="utility_buttons[1]"
-          @buttonpress="clearCanvas" >
-        </utility-button>
-        <utility-button
-          :button-name="utility_buttons[2]"
-          @buttonpress="clearCanvas" >
-        </utility-button>
-        <utility-button
-          :button-name="utility_buttons[3]"
-          @buttonpress="clearCanvas" >
-        </utility-button>
-        <utility-button
-          :button-name="utility_buttons[4]"
-          @buttonpress="clearCanvas" >
-        </utility-button>
+      </div>
+
+      <div id="tools" class="tabcontent" v-if="tab_selected == 1">
 
       </div>
-      <div id="tools" class="tabcontent">
 
-      </div>
-      <div id="colors" class="tabcontent">
+      <div id="colors" class="tabcontent" v-if="tab_selected == 2">
 
         <div id="color_swatch_selector">
           <color-swatch
@@ -107,7 +85,7 @@
         </div>
 
       </div>
-      <div id="other" class="tabcontent">
+      <div id="other" class="tabcontent" v-if="tab_selected == 3">
 
         <a href="in_progress/color-sliders.html">Color Picker Demo</a>
 
@@ -138,13 +116,15 @@
       el: '#paint-js',
 
       data: {
+        tabs: ['Utilities', 'Tools', 'Colors', 'Other'],
+        tab_selected: 0,
+
         primary_color: [0, 0, 0],
         secondary_color: [0, 0, 0],
         primary_swatch_name: "Primary",
         secondary_swatch_name: "Secondary",
         primary_selected: true,
         secondary_selected: false,
-
         primary_style: "rgba(0, 0, 0, 1)",
         secondary_style: "rgba(0, 0, 0, 1)",
 
@@ -154,6 +134,9 @@
       },
 
       methods: {
+        openTab: function(tab) {
+          this.tab_selected = tab;
+        },
         updatePrimaryColor: function(e) {
           this.primary_color[0] = e.R;
           this.primary_color[1] = e.G;

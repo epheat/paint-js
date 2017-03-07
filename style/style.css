@@ -46,7 +46,11 @@ body{
 }
 
 .tabcontent {
-  display: none;
+  display: block;
+}
+
+.activetabcontent {
+  display: block;
 }
 
 .tablink {
