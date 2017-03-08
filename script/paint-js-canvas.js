@@ -11,7 +11,7 @@ Vue.component('paint-js-canvas', {
 
   // props are local variables that receive changes from the parent element
   // TODO: add 'tool' as a prop
-  props: ['primaryColor', 'secondaryColor', 'primaryColorStyle', 'secondaryColorStyle', 'clearMessage'],
+  props: ['primaryColor', 'secondaryColor', 'primaryColorStyle', 'secondaryColorStyle', 'clearMessage', 'saveMessage'],
 
   // data must be a function, to keep local variables separate
   data: function() {
@@ -126,15 +126,32 @@ Vue.component('paint-js-canvas', {
     clearCanvas: function() {
       var new_canvas = this.context.createImageData(this.w, this.h);
       this.context.putImageData(new_canvas, 0, 0);
+    },
+
+    saveCanvas: function() {
+
+      console.log("saving...");
+      // TODO: GARRETT
+
+
     }
 
   },
 
   watch: {
     clearMessage: function() {
-      this.clearCanvas();
-      this.$emit('cleared');
+      if (this.clearMessage == true) {
+        this.clearCanvas();
+        this.$emit('cleared');
+      }
+    },
+    saveMessage: function() {
+      if (this.saveMessage == true) { // detect saveMessage turning true from false
+        this.saveCanvas();
+        this.$emit('saved');
+      }
     }
+
   },
 
   computed: {
