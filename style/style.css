@@ -49,10 +49,6 @@ body{
   display: block;
 }
 
-.activetabcontent {
-  display: block;
-}
-
 .tablink {
   font-family: 'Muli', sans-serif;
   display: block;

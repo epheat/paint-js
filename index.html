@@ -48,7 +48,7 @@
           v-for="(button, index) in utility_buttons"
           :key="button"
           :button-name="button"
-          @buttonpress="clearCanvas" >
+          @buttonpress="executeUtility(index)" >
         </utility-button>
       </div>
 
@@ -102,7 +102,9 @@
       :primary-color-style="primary_style"
       :secondary-color-style="secondary_style"
       :clear-message="canvas_clear_message"
-      @cleared="canvasCleared">
+      :save-message="canvas_save_message"
+      @cleared="canvasCleared"
+      @saved="canvasSaved">
       </paint-js-canvas>
 
     </div>
@@ -130,12 +132,31 @@
 
         utility_buttons: ['Save', 'Load', 'Undo', 'Redo', 'Clear'],
         canvas_clear_message: false,
+        canvas_save_message: false
 
       },
 
       methods: {
         openTab: function(tab) {
           this.tab_selected = tab;
+        },
+        executeUtility: function(utility) {
+          if (utility == 0) {         // save
+            console.log("save");
+            this.saveCanvas();
+          } else if (utility == 1) {  // load
+            console.log("load");
+
+            // TODO: GARRETT
+
+          } else if (utility == 2) {  // undo
+            console.log("undo");
+          } else if (utility == 3) {  // redo
+            console.log("redo");
+          } else if (utility == 4) {  // clear
+            console.log("clear");
+            this.clearCanvas();
+          }
         },
         updatePrimaryColor: function(e) {
           this.primary_color[0] = e.R;
@@ -159,13 +180,21 @@
           this.primary_selected = false;
         },
 
+        saveCanvas: function() {
+          this.canvas_save_message = true;
+        },
+        canvasSaved: function() {
+          console.log("saved.");
+          this.canvas_save_message = false;
+        },
+
         clearCanvas: function() {
-          console.log("clear canvas!");
           this.canvas_clear_message = true;
         },
         canvasCleared: function() {
           this.canvas_clear_message = false;
         }
+
 
       }
     })
