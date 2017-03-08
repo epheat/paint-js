@@ -1,5 +1,3 @@
-//garrett was here. and still is
-//Corey's turn
 // epheat
 // CS 498 Group 3
 // Paint.js

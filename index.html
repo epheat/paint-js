@@ -30,6 +30,10 @@
   <script src="script/paint-js-canvas.js" type="text/javascript"></script>
   <!-- import utility-button component -->
   <script src="script/utility-button.js" type="text/javascript"></script>
+  <!-- import tool-button component -->
+  <script src="script/tool-button.js" type="text/javascript"></script>
+  <!-- import tool-sliders component -->
+  <script src="script/tool-sliders.js" type="text/javascript"></script>
 
 
 </head>
@@ -53,6 +57,20 @@
       </div>
 
       <div id="tools" class="tabcontent" v-if="tab_selected == 1">
+        <tool-button
+          v-for="(tool, index) in tools"
+          :key="tool"
+          :button-name="tool.name"
+          :selected="index == tool_selected"
+          @buttonpress="selectTool(index)" >
+        </tool-button>
+
+        <tool-sliders
+          v-for="(tool, index) in tools"
+          v-if="index == tool_selected"
+          :key="tool"
+          :tool-properties="tool.properties" >
+        </tool-sliders>
 
       </div>
 
@@ -121,6 +139,15 @@
         tabs: ['Utilities', 'Tools', 'Colors', 'Other'],
         tab_selected: 0,
 
+        tools:  [ { name: 'pencil', properties: { width: 1 } },
+                  { name: 'brush', properties: { width: 5, hardness: 100 } },
+                  { name: 'eraser', properties: { width: 5 } },
+                  { name: 'bucket', properties: { leniency: 0 } },
+                  { name: 'pen', properties: { width: 5, angle: 100 } },
+
+                ],
+        tool_selected: 0,
+
         primary_color: [0, 0, 0],
         secondary_color: [0, 0, 0],
         primary_swatch_name: "Primary",
@@ -158,6 +185,11 @@
             this.clearCanvas();
           }
         },
+
+        selectTool: function(t) {
+          this.tool_selected = t;
+        },
+
         updatePrimaryColor: function(e) {
           this.primary_color[0] = e.R;
           this.primary_color[1] = e.G;
