@@ -109,6 +109,16 @@ Vue.component('paint-js-canvas', {
         }
       }
 
+    },
+
+    draw_thick_line: function(draw_color) {
+
+      // TODO: BGIV
+      // replace instances of the draw_line() function in the mousemove/mousedown with this function to test.
+      // you'll want to draw a thick line from (this.prevX, this.prevY) to (this.currX, this.currY)
+
+
+
 
     },
 
