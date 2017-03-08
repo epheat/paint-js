@@ -28,7 +28,10 @@ Vue.component('paint-js-canvas', {
       h: 0,
       line_width: 2,
 
-      imgData: null
+      imgData: null,
+
+
+      // UNDO AND REDO STACKS
 
     }
   },
@@ -78,9 +81,15 @@ Vue.component('paint-js-canvas', {
     },
     mouseUp: function(e) {
       this.draw_flag = false;
+
+      // save canvas to undo stack
+
     },
     mouseOut: function(e) {
       this.draw_flag = false;
+
+      // save canvas to undo stack
+
     },
 
     draw_line: function(draw_color) {
@@ -95,6 +104,7 @@ Vue.component('paint-js-canvas', {
       var err = dx - dy;
 
       while(true){
+
         this.updatePixel(this.prevX, this.prevY, draw_color);
 
         if ((this.prevX==this.currX) && (this.prevY==this.currY)) break;
