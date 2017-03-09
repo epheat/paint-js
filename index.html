@@ -115,14 +115,11 @@
     <div id="canvas-area">
 
       <paint-js-canvas
+      ref="paintjscanvas"
       :primary-color="primary_color"
       :secondary-color="secondary_color"
       :primary-color-style="primary_style"
-      :secondary-color-style="secondary_style"
-      :clear-message="canvas_clear_message"
-      :save-message="canvas_save_message"
-      @cleared="canvasCleared"
-      @saved="canvasSaved">
+      :secondary-color-style="secondary_style" >
       </paint-js-canvas>
 
     </div>
@@ -144,7 +141,6 @@
                   { name: 'eraser', properties: { width: 5 } },
                   { name: 'bucket', properties: { leniency: 0 } },
                   { name: 'pen', properties: { width: 5, angle: 100 } },
-
                 ],
         tool_selected: 0,
 
@@ -158,8 +154,6 @@
         secondary_style: "rgba(0, 0, 0, 1)",
 
         utility_buttons: ['Save', 'Load', 'Undo', 'Redo', 'Clear'],
-        canvas_clear_message: false,
-        canvas_save_message: false
 
       },
 
@@ -169,10 +163,8 @@
         },
         executeUtility: function(utility) {
           if (utility == 0) {         // save
-            console.log("save");
             this.saveCanvas();
           } else if (utility == 1) {  // load
-            console.log("load");
 
             // TODO: GARRETT
 
@@ -213,20 +205,14 @@
         },
 
         saveCanvas: function() {
-          this.canvas_save_message = true;
-        },
-        canvasSaved: function() {
-          console.log("saved.");
-          this.canvas_save_message = false;
+          // execute saveCanvas() method from child
+          this.$refs.paintjscanvas.saveCanvas();
         },
 
         clearCanvas: function() {
-          this.canvas_clear_message = true;
-        },
-        canvasCleared: function() {
-          this.canvas_clear_message = false;
+          // execute clearCanvas() method from child
+          this.$refs.paintjscanvas.clearCanvas();
         }
-
 
       }
     })
