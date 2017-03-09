@@ -30,8 +30,8 @@ Vue.component('paint-js-canvas', {
 
       imgData: null,
 
-
-      // UNDO AND REDO STACKS
+      // TODO: COREY
+      // add undo and redo stacks here
 
     }
   },
@@ -82,12 +82,14 @@ Vue.component('paint-js-canvas', {
     mouseUp: function(e) {
       this.draw_flag = false;
 
+      // TODO: COREY
       // save canvas to undo stack
 
     },
     mouseOut: function(e) {
       this.draw_flag = false;
 
+      // TODO: COREY
       // save canvas to undo stack
 
     },
@@ -153,7 +155,14 @@ Vue.component('paint-js-canvas', {
       console.log("saving...");
       // TODO: GARRETT
 
+    },
 
+    undoCanvas: function() {
+      // TODO: COREY
+    },
+
+    redoCanvas: function() {
+      // TODO: COREY
     }
 
   },
