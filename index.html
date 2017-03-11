@@ -70,7 +70,7 @@
           v-for="(tool, index) in tools"
           v-if="index == tool_selected"
           :key="tool"
-          :tool-properties="tool.properties" >
+          :tool-properties="tools[index].properties" >
         </tool-sliders>
 
       </div>
@@ -143,6 +143,7 @@
                   { name: 'bucket', properties: { leniency: 0 } },
                   { name: 'pen', properties: { width: 5, angle: 100 } },
                 ],
+
         tool_selected: 0,
 
         primary_color: [0, 0, 0],

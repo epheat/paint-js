@@ -9,8 +9,8 @@ Vue.component('tool-sliders', {
   // HTML template of the component
   template:
   `<div class="controllers">
-    <template v-for="(value, key) in toolProperties">
-      <input class="brightness-slider" type="range" v-model="value" min="0" max="255" > {{ key }} <br>
+    <template v-for="(value, key, index) in toolProperties">
+      <input class="brightness-slider" type="range" v-model="toolProperties[key]" min="0" max="100" > {{ key }} : {{ value }} <br>
     </template>
   </div>`,
 
