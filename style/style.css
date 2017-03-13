@@ -81,19 +81,8 @@ body{
 
 /* styles for color tab */
 #colors {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
   width: 100%;
   height: calc(100% - 30px);
-}
-
-#primary-and-secondary {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 200px;
-  height: 100%;
 }
 
 .color-container {
@@ -112,29 +101,18 @@ body{
   box-shadow: 2px 2px 2px 0px #444444;
 }
 
-#primary-color {
-  display: block;
-  height: 100%;
+.swatch {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  margin: 5px;
+}
+.swatch-button {
+  display: inline-block;
   width: 100%;
-  background-color: red;
-}
-
-#secondary-color {
-  display: block;
   height: 100%;
-  width: 100%;
-  background-color: blue;
 }
 
-.selected {
-  box-shadow: 2px 2px 2px 0px #444444, 0px 0px 0px 2px #fff inset;
-}
-
-.color-slider {
-  display: block;
-  margin-top: 10px;
-  width: 100px;
-}
 /* end styles for color tab */
 
 /* styles for utilities tab */
@@ -156,3 +134,22 @@ body{
 
 
 /* end styles for utilities tab */
+
+/* styles for tools tab */
+.tool-button-container {
+  display: inline-block;
+  width: 60px;
+  height: 60px;
+  margin: 10px;
+  margin-top: 30px;
+}
+
+.tool-button {
+  display: block;
+  text-align: center;
+  background-color: #80b3ff;
+  width: 100%;
+  height: 100%;
+}
+
+/* end styles for tools tab */

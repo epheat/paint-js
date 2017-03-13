@@ -7,7 +7,14 @@
 Vue.component('color-sliders', {
 
   // HTML template of the component
-  template: `<div class="controllers" v-bind:style={display:display_style}><input class="red-slider" type="range" v-model="channel_R" min="0" max="255" >Red<br><input class="green-slider" type="range" v-model="channel_G" min="0" max="255" >Green<br><input class="blue-slider" type="range" v-model="channel_B" min="0" max="255" >Blue<br><input class="darkness-slider" type="range" v-model="darkness" min="0" max="255" >Darkness<br><input class="brightness-slider" type="range" v-model="brightness" min="0" max="255" >Brightness<br></div>`,
+  template:`
+  <div class="controllers" v-bind:style={display:display_style}>
+    <input class="red-slider" type="range" v-model="channel_R" min="0" max="255" > Red <br>
+    <input class="green-slider" type="range" v-model="channel_G" min="0" max="255" > Green <br>
+    <input class="blue-slider" type="range" v-model="channel_B" min="0" max="255" > Blue <br>
+    <input class="darkness-slider" type="range" v-model="darkness" min="0" max="255" > Darkness <br>
+    <input class="brightness-slider" type="range" v-model="brightness" min="0" max="255" > Brightness <br>
+  </div>`,
 
   // props are local variables that receive changes from the parent element
   props: ['colorProp', 'visible'],

@@ -23,6 +23,8 @@
   <!-- import Vue itself -->
   <!-- <script src="https://unpkg.com/vue/dist/vue.js"></script> -->
   <script src="vue_src/vue.js" type="text/javascript"></script>
+  <!-- import color-selector component -->
+  <script src="script/color-selector.js" type="text/javascript"></script>
   <!-- import color-sliders component -->
   <script src="script/color-sliders.js" type="text/javascript"></script>
   <!-- import color-swatch component -->
@@ -77,19 +79,20 @@
 
       <div id="colors" class="tabcontent" v-if="tab_selected == 2">
 
-        <div id="color_swatch_selector">
-          <color-swatch
-            :swatch-name="primary_swatch_name"
+        <!-- TODO: wrap these into columns using bootstrap -->
+
+          <color-selector
+            :selector-name="primary_swatch_name"
             :selected="primary_selected"
             :color-style="primary_style"
-            @selectswatch="selectPrimarySwatch">
-          </color-swatch>
-          <color-swatch
-            :swatch-name="secondary_swatch_name"
+            @select="selectPrimarySwatch">
+          </color-selector>
+          <color-selector
+            :selector-name="secondary_swatch_name"
             :selected="secondary_selected"
             :color-style="secondary_style"
-            @selectswatch="selectSecondarySwatch">
-          </color-swatch>
+            @select="selectSecondarySwatch">
+          </color-selector>
 
           <color-sliders
             :color-prop="primary_color"
@@ -101,9 +104,14 @@
             :visible="secondary_selected"
             @colorchanged="updateSecondaryColor">
           </color-sliders>
-        </div>
+
+          <color-swatch
+            :rgb="rgb_test"
+            @swatch="debug">
+          </color-swatch>
 
       </div>
+
       <div id="other" class="tabcontent" v-if="tab_selected == 3">
 
         <a href="in_progress/color-sliders.html">Color Picker Demo</a>
@@ -141,7 +149,7 @@
                   { name: 'brush', properties: { width: 5, hardness: 100 } },
                   { name: 'eraser', properties: { width: 5 } },
                   { name: 'bucket', properties: { leniency: 0 } },
-                  { name: 'pen', properties: { width: 5, angle: 100 } },
+                  { name: 'pen', properties: { width: 5, angle: 0 } },
                 ],
 
         tool_selected: 0,
@@ -154,6 +162,8 @@
         secondary_selected: false,
         primary_style: "rgba(0, 0, 0, 1)",
         secondary_style: "rgba(0, 0, 0, 1)",
+
+        rgb_test: { red: 30, green: 150, blue: 200 },
 
         utility_buttons: ['Save', 'Load', 'Undo', 'Redo', 'Clear'],
 
@@ -207,6 +217,11 @@
         selectSecondarySwatch: function(e) {
           this.secondary_selected = true;
           this.primary_selected = false;
+        },
+
+        debug: function() {
+          this.rgb_test.red += 1;
+          console.log("update color-selector");
         },
 
         saveCanvas: function() {

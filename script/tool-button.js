@@ -9,8 +9,8 @@ Vue.component('tool-button', {
   // HTML template of the component
   template:
   `
-  <div class="button-container">
-    <a href="javascript:void(0)" class="button" :style="styleObject" @mousedown="mouseDown" @mouseup="mouseUp" @mouseout="mouseOut">
+  <div class="tool-button-container">
+    <a href="javascript:void(0)" class="tool-button" :style="styleObject" @mousedown="mouseDown" @mouseup="mouseUp" @mouseout="mouseOut">
       {{buttonName}}
     </a>
   </div>
