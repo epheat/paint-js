@@ -137,9 +137,9 @@ Vue.component('paint-js-canvas', {
     updatePixel: function(x, y, draw_color) {
       var pixel = this.context.createImageData(1,1);
       // set the pixel to the draw_color
-      for (var i=0; i<3; i++) {
-        pixel.data[i] = draw_color[i];
-      }
+      pixel.data[0] = draw_color.red;
+      pixel.data[1] = draw_color.green;
+      pixel.data[2] = draw_color.blue;
       // set alpha value for pixel to 255;
       pixel.data[3] = 255;
       this.context.putImageData(pixel, x, y);

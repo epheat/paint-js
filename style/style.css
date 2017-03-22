@@ -14,8 +14,7 @@ body{
 /* toolbars div is the top 150px of the screen */
 #toolbars {
   background-color: #99ccff;
-  width: 100%;
-  height: 150px;
+  min-height: 150px;
 
 }
 /* canvas-area div is the remaining area of the screen */
@@ -30,19 +29,14 @@ body{
   cursor: crosshair;
   box-shadow: 0px 0px 0px 1px #000000 inset;
 }
-/* tab that opens by default when the program loads */
-#default-open {
-
-}
 
 .tab {
-  min-width: 50px;
-  max-width: 130px;
+  width: 130px;
   margin-left: 5px;
   margin-right: 5px;
   height: 26px;
   margin-top: 4px;
-  flex-grow: 1;
+  display: inline-block;
 }
 
 .tabcontent {
@@ -69,35 +63,32 @@ body{
 
 
 .tab-area {
-  margin: 0px;
   list-style-type: none;
-  display: flex;
-  height: 30px;
-  width: 100%;
   padding-left: 0px;
+  margin: 0px;
+  height: 30px;
   background-color: #8080ff;
   /*box-shadow: 0px 0px 0px 1px #000000 inset;*/
 }
 
 /* styles for color tab */
 #colors {
-  width: 100%;
-  height: calc(100% - 30px);
+
 }
 
 .color-container {
-  width: 80px;
-  height: 80px;
+  width: 60px;
+  height: 60px;
 }
 .color-text {
   font-family: 'Muli', sans-serif;
   text-align: center;
 }
 .color-box {
-  margin-left: 10px;
-  margin-right: 10px;
-  width: 60px;
-  height: 60px;
+  margin-left: 5px;
+  margin-right: 5px;
+  width: 50px;
+  height: 50px;
   box-shadow: 2px 2px 2px 0px #444444;
 }
 

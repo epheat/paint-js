@@ -9,11 +9,11 @@ Vue.component('color-sliders', {
   // HTML template of the component
   template:`
   <div class="controllers" v-bind:style={display:display_style}>
-    <input class="red-slider" type="range" v-model="channel_R" min="0" max="255" > Red <br>
-    <input class="green-slider" type="range" v-model="channel_G" min="0" max="255" > Green <br>
-    <input class="blue-slider" type="range" v-model="channel_B" min="0" max="255" > Blue <br>
-    <input class="darkness-slider" type="range" v-model="darkness" min="0" max="255" > Darkness <br>
-    <input class="brightness-slider" type="range" v-model="brightness" min="0" max="255" > Brightness <br>
+    <input class="red-slider" type="range" v-model="channel_R" min="0" max="255" > Red
+    <input class="green-slider" type="range" v-model="channel_G" min="0" max="255" > Green
+    <input class="blue-slider" type="range" v-model="channel_B" min="0" max="255" > Blue
+    <input class="darkness-slider" type="range" v-model="darkness" min="0" max="255" > Darkness
+    <input class="brightness-slider" type="range" v-model="brightness" min="0" max="255" > Brightness
   </div>`,
 
   // props are local variables that receive changes from the parent element
@@ -23,9 +23,9 @@ Vue.component('color-sliders', {
   data: function() {
     return {
 
-      channel_R: this.colorProp[0],
-      channel_G: this.colorProp[1],
-      channel_B: this.colorProp[2],
+      channel_R: this.colorProp.red,
+      channel_G: this.colorProp.green,
+      channel_B: this.colorProp.blue,
 
       dark_ratios: [0, 0, 0],
       bright_ratios: [0, 0, 0],
@@ -113,7 +113,12 @@ Vue.component('color-sliders', {
       this.channel_B = Math.round(255 - this.bright_ratios[2] * (255 - this.brightness));
     },
     emitColorChange: function() {
-      this.$emit('colorchanged', {color_style: this.color_style, R: this.channel_R, G: this.channel_G, B: this.channel_B} );
+      this.$emit('colorchanged', {color_style: this.color_style, red: this.channel_R, green: this.channel_G, blue: this.channel_B} );
+    },
+    updateChannels: function() {
+      this.channel_R = this.colorProp.red;
+      this.channel_G = this.colorProp.green;
+      this.channel_B = this.colorProp.blue;
     }
   }
 

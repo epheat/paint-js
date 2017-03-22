@@ -16,7 +16,7 @@ Vue.component('color-swatch', {
 
   // props are local variables that receive changes from the parent element
   // rgb should be an object with red, blue, and green properties
-  props: ['rgb', 'style'],
+  props: ['rgb'],
 
   // in components, data must be a function, to keep local variables separate
   data: function() {
@@ -28,7 +28,7 @@ Vue.component('color-swatch', {
   // Component methods
   methods: {
     click: function() {
-      this.$emit('swatch', {rgb: this.rgb, style: this.style});
+      this.$emit('swatch', {rgb: this.rgb});
     }
   },
 
@@ -36,7 +36,7 @@ Vue.component('color-swatch', {
   computed: {
     styleObject: function() {
       return {
-        backgroundColor: this.style
+        backgroundColor: "rgba(" + this.rgb.red + ", " + this.rgb.green + ", " + this.rgb.blue + ", 1)"
       }
     }
 
