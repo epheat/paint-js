@@ -134,15 +134,26 @@ Vue.component('paint-js-canvas', {
 
     },
 
-    updatePixel: function(x, y, draw_color) {
-      var pixel = this.context.createImageData(1,1);
+    updatePixel: function(x, y, c) {
+      var radius = this.tool.properties.width;;
+      this.context.beginPath(); 
+      this.context.arc(x, y, radius, 0, 2* Math.PI, false);
+      this.context.fillStyle =  `rgba(${c.red}, ${c.green}, ${c.blue}, 255)`;
+      this.context.fill();
+
+      // TODO: use this with bresenham's midpoint algorithm
+      //var color = [draw_color.red, draw_color.green, draw_color.blue, 255];
+      //var pixel = this.context.createImageData(radius, radius);
+      //for (var i = 0; i < 4*radius*radius; i++) {
+        //pixel.data[i] = color[i%4];
+      //}
       // set the pixel to the draw_color
-      pixel.data[0] = draw_color.red;
-      pixel.data[1] = draw_color.green;
-      pixel.data[2] = draw_color.blue;
+      //pixel.data[0] = draw_color.red;
+      //pixel.data[1] = draw_color.green;
+      //pixel.data[2] = draw_color.blue;
       // set alpha value for pixel to 255;
-      pixel.data[3] = 255;
-      this.context.putImageData(pixel, x, y);
+      //pixel.data[3] = 255;
+      //this.context.putImageData(pixel, x - radius/2, y - radius/2);
     },
 
     clearCanvas: function() {
