@@ -3,7 +3,7 @@ input[type=range] {
   -webkit-appearance: none;
   display: inline-block;
   margin-right: 10px;
-  width: 150px;
+  width: calc(100% - 100px);
   background-color: #99ccff;
 }
 
@@ -49,6 +49,7 @@ input[type=range]:focus::-webkit-slider-runnable-track {
 
 /* styling other elements in <color-sliders> */
 .controllers {
+  width: 100%;
   margin: 0;
   margin-top: 8px;
   display: inline-block;
