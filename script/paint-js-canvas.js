@@ -54,9 +54,9 @@ Vue.component('paint-js-canvas', {
 
       // draw initial dot
       if (e.which == 1) {
-        this.updatePixel(this.currX, this.currY, this.primaryColor);
+        this.draw(this.currX, this.currY, this.primaryColor);
       } else {
-        this.updatePixel(this.currX, this.currY, this.secondaryColor);
+        this.draw(this.currX, this.currY, this.secondaryColor);
       }
 
       this.draw_flag = true;
@@ -72,9 +72,9 @@ Vue.component('paint-js-canvas', {
       if (this.draw_flag) {
         // for left click, draw with primary. Right click, draw with secondary
         if (e.which == 1) {
-          this.draw_line(this.primaryColor);
+          this.draw_line(this.prevX, this.prevY, this.currX, this.currY, this.primaryColor);
         } else {
-          this.draw_line(this.secondaryColor);
+          this.draw_line(this.prevX, this.prevY, this.currX, this.currY, this.secondaryColor);
         }
 
       }
@@ -94,51 +94,55 @@ Vue.component('paint-js-canvas', {
 
     },
 
-    draw_line: function(draw_color) {
+    draw: function(x, y, draw_color) {
+      if (this.tool.name == "pencil") {
+        this.drawCircle(x, y, this.tool.properties.width, draw_color);
+      } else if (this.tool.name == "brush") {
+
+      } else if (this.tool.name == "eraser") {
+        this.drawCircle(x, y, this.tool.properties.width, {red: 255, green: 255, blue: 255});
+      } else if (this.tool.name == "bucket") {
+
+      } else if (this.tool.name == "pen") {
+
+      } else {
+
+      }
+    },
+
+    draw_line: function(x0, y0, xf, yf, draw_color) {
       // Draw a raster line from (prevX, prevY) to (currX, currY) using Bresenham's line algorithm
       // https://en.wikipedia.org/wiki/Bresenham's_line_algorithm
       // http://stackoverflow.com/questions/4672279/bresenham-algorithm-in-javascript
 
-      var dx = Math.abs(this.currX - this.prevX);
-      var dy = Math.abs(this.currY - this.prevY);
-      var sx = (this.prevX < this.currX) ? 1 : -1;
-      var sy = (this.prevY < this.currY) ? 1 : -1;
+      var dx = Math.abs(xf - x0);
+      var dy = Math.abs(yf - y0);
+      var sx = (x0 < xf) ? 1 : -1;
+      var sy = (y0 < yf) ? 1 : -1;
       var err = dx - dy;
 
       while(true){
 
-        this.updatePixel(this.prevX, this.prevY, draw_color);
+        this.draw(x0, y0, draw_color);
 
-        if ((this.prevX==this.currX) && (this.prevY==this.currY)) break;
+        if ((x0==xf) && (y0==yf)) break;
         var e2 = 2*err;
         if (e2 >-dy) {
           err -= dy;
-          this.prevX += sx;
+          x0 += sx;
         }
         if (e2 < dx) {
           err += dx;
-          this.prevY += sy;
+          y0 += sy;
         }
       }
 
     },
 
-    draw_thick_line: function(draw_color) {
-
-      // TODO: BGIV
-      // replace instances of the draw_line() function in the mousemove/mousedown with this function to test.
-      // you'll want to draw a thick line from (this.prevX, this.prevY) to (this.currX, this.currY)
-
-
-
-
-    },
-
-    updatePixel: function(x, y, c) {
-      var radius = this.tool.properties.width;;
-      this.context.beginPath(); 
+    drawCircle: function(x, y, radius, draw_color) {
+      this.context.beginPath();
       this.context.arc(x, y, radius, 0, 2* Math.PI, false);
-      this.context.fillStyle =  `rgba(${c.red}, ${c.green}, ${c.blue}, 255)`;
+      this.context.fillStyle =  `rgba(${draw_color.red}, ${draw_color.green}, ${draw_color.blue}, 255)`;
       this.context.fill();
 
       // TODO: use this with bresenham's midpoint algorithm
