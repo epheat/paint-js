@@ -11,7 +11,7 @@ Vue.component('paint-js-canvas', {
 
   // props are local variables that receive changes from the parent element
   // TODO: add 'tool' as a prop
-  props: ['primaryColor', 'secondaryColor', 'primaryColorStyle', 'secondaryColorStyle'],
+  props: ['primaryColor', 'secondaryColor', 'primaryColorStyle', 'secondaryColorStyle', 'tool'],
 
   // data must be a function, to keep local variables separate
   data: function() {
