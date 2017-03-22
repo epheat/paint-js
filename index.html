@@ -63,13 +63,16 @@
 
       <div id="tools" class="row" v-if="tab_selected == 1">
         <div class="col-xs-8">
-          <tool-button
-            v-for="(tool, index) in tools"
-            :key="tool"
-            :button-name="tool.name"
-            :selected="index == tool_selected"
-            @buttonpress="selectTool(index)" >
-          </tool-button>
+          <div class="row">
+            <div class="col-xs-2" v-for="(tool, index) in tools">
+              <tool-button
+                :key="tool"
+                :button-name="tool.name"
+                :selected="index == tool_selected"
+                @buttonpress="selectTool(index)" >
+              </tool-button>
+            </div>
+          </div>
         </div>
         <div class="col-xs-4">
           <tool-sliders
@@ -86,46 +89,42 @@
 
         <!-- TODO: wrap these into columns using bootstrap -->
 
-        <div class="col-xs-3">
-          <div class="row">
-            <div class="col-xs-6">
-              <color-selector
-                ref="primarycolorselector"
-                :selector-name="primary_swatch_name"
-                :selected="primary_selected"
-                :color-style="primary_style"
-                @select="selectPrimarySwatch">
-              </color-selector>
-            </div>
-            <div class="col-xs-6">
-              <color-selector
-                ref="secondarycolorselector"
-                :selector-name="secondary_swatch_name"
-                :selected="secondary_selected"
-                :color-style="secondary_style"
-                @select="selectSecondarySwatch">
-              </color-selector>
-            </div>
-          </div>
-        </div>
-        <div class="col-xs-5">
+        <div class="selector-container">
+          <color-selector
+            :selector-name="primary_swatch_name"
+            :selected="primary_selected"
+            :color-style="primary_style"
+            @select="selectPrimarySwatch"
+            @customswatch="customSwatchFromPrimary">
+          </color-selector>
+          <color-selector
+            :selector-name="secondary_swatch_name"
+            :selected="secondary_selected"
+            :color-style="secondary_style"
+            @select="selectSecondarySwatch"
+            @customswatch="customSwatchFromSecondary">
+          </color-selector>
           <color-sliders
+            ref="primarycolorsliders"
             :color-prop="primary_color"
             :visible="primary_selected"
             @colorchanged="updatePrimaryColor">
           </color-sliders>
           <color-sliders
+            ref="secondarycolorsliders"
             :color-prop="secondary_color"
             :visible="secondary_selected"
             @colorchanged="updateSecondaryColor">
           </color-sliders>
         </div>
-        <div class="col-xs-4">
+        <div class="swatch-container">
           <color-swatch
-            v-for="(swatch, index) in default_swatches"
+            v-for="(swatch, index) in swatches"
             key="swatch"
             :rgb="swatch"
-            @swatch="debug">
+            :index="index"
+            @swatch="updateSelector"
+            @deleteswatch="deleteSwatch">
           </color-swatch>
         </div>
 
@@ -183,7 +182,7 @@
         primary_style: "rgba(0, 0, 0, 1)",
         secondary_style: "rgba(0, 0, 0, 1)",
 
-        default_swatches: [ { red: 255, green: 0, blue: 0 },
+        swatches:         [ { red: 255, green: 0, blue: 0 },
                             { red: 200, green: 20, blue: 40 },
                             { red: 160, green: 40, blue: 80 },
                             { red: 120, green: 60, blue: 120 },
@@ -204,6 +203,15 @@
                             { red: 240, green: 160, blue: 180 },
                             { red: 255, green: 200, blue: 160 },
                             { red: 240, green: 255, blue: 140 },
+                            { red: 220, green: 180, blue: 120 },
+                            { red: 200, green: 100, blue: 100 },
+                            { red: 180, green: 0, blue: 80 },
+                            { red: 160, green: 100, blue: 60 },
+                            { red: 140, green: 180, blue: 40 },
+                            { red: 120, green: 255, blue: 20 },
+                            { red: 100, green: 240, blue: 0 },
+                            { red: 80, green: 200, blue: 60 },
+                            { red: 60, green: 100, blue: 120 },
         ],
 
         utility_buttons: ['Save', 'Load', 'Undo', 'Redo', 'Clear'],
@@ -260,22 +268,32 @@
           this.primary_selected = false;
         },
 
-        debug: function(e) {
+        updateSelector: function(e) {
           if (this.primary_selected) {
             this.primary_color.red = e.rgb.red;
             this.primary_color.green = e.rgb.green;
             this.primary_color.blue = e.rgb.blue;
             this.primary_style = "rgba(" + this.primary_color.red + ", " + this.primary_color.green + ", " + this.primary_color.blue + ", 1)";
-            this.$refs.primarycolorselector.updateChannels();
+            this.$refs.primarycolorsliders.updateChannels();
           } else {
             this.secondary_color.red = e.rgb.red;
             this.secondary_color.green = e.rgb.green;
             this.secondary_color.blue = e.rgb.blue;
             this.secondary_style = "rgba(" + this.secondary_color.red + ", " + this.secondary_color.green + ", " + this.secondary_color.blue + ", 1)";
-            console.log(this.$refs.secondarycolorselector);
+            this.$refs.secondarycolorsliders.updateChannels();
           }
+        },
 
-          console.log("update color-selector");
+        deleteSwatch: function(e) {
+          this.swatches.splice(e, 1);
+        },
+
+        customSwatchFromPrimary: function() {
+          this.swatches.splice(this.swatches.length, 0, {red: this.primary_color.red, green: this.primary_color.green, blue: this.primary_color.blue});
+        },
+
+        customSwatchFromSecondary: function() {
+          this.swatches.splice(this.swatches.length, 0, {red: this.secondary_color.red, green: this.secondary_color.green, blue: this.secondary_color.blue});
         },
 
         saveCanvas: function() {

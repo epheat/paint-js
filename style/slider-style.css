@@ -49,8 +49,9 @@ input[type=range]:focus::-webkit-slider-runnable-track {
 
 /* styling other elements in <color-sliders> */
 .controllers {
-  width: 100%;
+  width: 250px;
   margin: 0;
+  margin-left: 10px;
   margin-top: 8px;
   display: inline-block;
   vertical-align: top;

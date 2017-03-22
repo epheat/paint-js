@@ -11,7 +11,7 @@ Vue.component('color-selector', {
   <div class="color-container">
     <div class="color-text">{{selectorName}}</div>
     <div class="color-box">
-      <a href="javascript:void(0)" class="color-selector" v-bind:style="styleObject" v-on:click="select">
+      <a href="javascript:void(0)" class="color-selector" v-bind:style="styleObject" v-on:mousedown="select" oncontextmenu="return false;">
       </a>
     </div>
   </div>`,
@@ -28,8 +28,12 @@ Vue.component('color-selector', {
 
   // Component methods
   methods: {
-    select: function() {
-      this.$emit('select');
+    select: function(e) {
+      if (e.which == 1) {
+        this.$emit('select');
+      } else {
+        this.$emit('customswatch');
+      }
     }
   },
 
