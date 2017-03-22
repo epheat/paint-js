@@ -10,13 +10,13 @@ Vue.component('color-swatch', {
   template:
   `
   <div class="swatch">
-    <a href="javascript:void(0)" class="swatch-button" :style="styleObject" @click="click"></a>
+    <a href="javascript:void(0)" class="swatch-button" :style="styleObject" @mousedown="click" oncontextmenu="return false;"></a>
   </div>
   `,
 
   // props are local variables that receive changes from the parent element
   // rgb should be an object with red, blue, and green properties
-  props: ['rgb'],
+  props: ['rgb', 'index'],
 
   // in components, data must be a function, to keep local variables separate
   data: function() {
@@ -27,8 +27,12 @@ Vue.component('color-swatch', {
 
   // Component methods
   methods: {
-    click: function() {
-      this.$emit('swatch', {rgb: this.rgb});
+    click: function(e) {
+      if (e.which == 1) {
+        this.$emit('swatch', {rgb: this.rgb});
+      } else {
+        this.$emit('deleteswatch', this.index);
+      }
     }
   },
 
