@@ -231,13 +231,9 @@
             // TODO: GARRETT
 
           } else if (utility == 2) {  // undo
-
-            // TODO: COREY
-
+            this.undoCanvas();
           } else if (utility == 3) {  // redo
-
-            // TODO: COREY
-
+            this.redoCanvas();
           } else if (utility == 4) {  // clear
             this.clearCanvas();
           }
@@ -300,6 +296,13 @@
         saveCanvas: function() {
           // execute saveCanvas() method from child
           this.$refs.paintjscanvas.saveCanvas();
+        },
+
+        undoCanvas: function() {
+          this.$refs.paintjscanvas.undoCanvas();
+        },
+        redoCanvas: function() {
+          this.$refs.paintjscanvas.redoCanvas();
         },
 
         clearCanvas: function() {
