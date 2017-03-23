@@ -6,6 +6,6 @@ Paint.js is a simple image-editing tool built in HTML, CSS, Javascript, and fram
 ## Authors
 Paint.js is the final project for CS498 Group 3:
 + Evan Heaton
-+ Gunnar Johnson
++ Bertil Johnson
 + Corey Kirkpatrick
 + Garrett Kearns
