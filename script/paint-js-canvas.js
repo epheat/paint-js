@@ -49,12 +49,7 @@ Vue.component('paint-js-canvas', {
 
     mouseDown: function(e) {
 
-      // save canvas image data to undo_stack so we can undo to that state
-      var undo_data = this.context.getImageData(0, 0, this.w, this.h);
-      this.undo_stack.push(undo_data);
-
-      // reset redo stack
-      this.redo_stack = [];
+      this.saveCanvasToUndoStack();
 
       // draw initial dot
       if (e.which == 1) {
@@ -159,6 +154,8 @@ Vue.component('paint-js-canvas', {
     },
 
     clearCanvas: function() {
+      this.saveCanvasToUndoStack();
+
       var new_canvas = this.context.createImageData(this.w, this.h);
       this.context.putImageData(new_canvas, 0, 0);
     },
@@ -170,6 +167,21 @@ Vue.component('paint-js-canvas', {
 
     },
 
+    saveCanvasToUndoStack: function() {
+      // save canvas image data to undo_stack so we can undo to that state
+      var undo_data = this.context.getImageData(0, 0, this.w, this.h);
+      this.undo_stack.push(undo_data);
+
+      // how many undos should we allow? 15?
+      if (this.undo_stack.length > 15) {
+        this.undo_stack.shift();
+        console.log("shift");
+      }
+
+      // reset redo stack
+      this.redo_stack = [];
+    },
+
     undoCanvas: function() {
       if (this.undo_stack.length == 0) {
         console.log("Nothing to undo!");
@@ -177,6 +189,7 @@ Vue.component('paint-js-canvas', {
         // save current canvas to redo stack, recall top of undo stack to canvas
         var redo_data = this.context.getImageData(0, 0, this.w, this.h);
         this.redo_stack.push(redo_data);
+
         var img_data = this.undo_stack.pop();
         this.context.putImageData(img_data, 0, 0);
       }
