@@ -28,10 +28,8 @@ Vue.component('paint-js-canvas', {
       h: 0,
       line_width: 2,
 
-      imgData: null,
-
-      // TODO: COREY
-      // add undo and redo stacks here
+      undo_stack: [],
+      redo_stack: []
 
     }
   },
@@ -43,7 +41,6 @@ Vue.component('paint-js-canvas', {
     this.w = this.canvas.width;
     this.h = this.canvas.height;
 
-    this.imgData = this.context.getImageData(0, 0, this.w, this.h);
     this.context.imageSmoothingEnabled = false;
   },
 
@@ -51,6 +48,13 @@ Vue.component('paint-js-canvas', {
   methods: {
 
     mouseDown: function(e) {
+
+      // save canvas image data to undo_stack so we can undo to that state
+      var undo_data = this.context.getImageData(0, 0, this.w, this.h);
+      this.undo_stack.push(undo_data);
+
+      // reset redo stack
+      this.redo_stack = [];
 
       // draw initial dot
       if (e.which == 1) {
@@ -82,15 +86,9 @@ Vue.component('paint-js-canvas', {
     mouseUp: function(e) {
       this.draw_flag = false;
 
-      // TODO: COREY
-      // save canvas to undo stack
-
     },
     mouseOut: function(e) {
       this.draw_flag = false;
-
-      // TODO: COREY
-      // save canvas to undo stack
 
     },
 
@@ -173,11 +171,29 @@ Vue.component('paint-js-canvas', {
     },
 
     undoCanvas: function() {
-      // TODO: COREY
+      if (this.undo_stack.length == 0) {
+        console.log("Nothing to undo!");
+      } else {
+        // save current canvas to redo stack, recall top of undo stack to canvas
+        var redo_data = this.context.getImageData(0, 0, this.w, this.h);
+        this.redo_stack.push(redo_data);
+        var img_data = this.undo_stack.pop();
+        this.context.putImageData(img_data, 0, 0);
+      }
+
     },
 
     redoCanvas: function() {
-      // TODO: COREY
+      if (this.redo_stack.length == 0) {
+        console.log("Nothing to redo!");
+      } else {
+        // save current canvas to undo stack, recall top of redo stack to canvas
+        var undo_data = this.context.getImageData(0, 0, this.w, this.h);
+        this.undo_stack.push(undo_data);
+        var img_data = this.redo_stack.pop();
+        this.context.putImageData(img_data, 0, 0);
+      }
+
     }
 
   },
