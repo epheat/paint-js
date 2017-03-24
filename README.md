@@ -9,5 +9,3 @@ Paint.js is the final project for CS498 Group 3:
 + Bertil Johnson
 + Corey Kirkpatrick
 + Garrett Kearns
-
-Test commit
