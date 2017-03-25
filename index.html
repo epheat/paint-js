@@ -128,6 +128,22 @@
           </color-swatch>
         </div>
 
+        <!-- blend modes -->
+        <select v-model="blend_mode">
+          <option>normal</option>
+          <option>darken</option>
+          <option>lighten</option>
+          <option>luminosity</option>
+          <option>overlay</option>
+          <option>color-dodge</option>
+          <option>color-burn</option>
+          <option>difference</option>
+          <option>hard-light</option>
+          <option>soft-light</option>
+          <option>color</option>
+
+        </select>
+
       </div>
 
       <div id="other" class="row tabcontent" v-if="tab_selected == 3">
@@ -147,7 +163,8 @@
       :secondary-color="secondary_color"
       :primary-color-style="primary_style"
       :secondary-color-style="secondary_style"
-      :tool="tools[tool_selected]" >
+      :tool="tools[tool_selected]"
+      :blend-mode="blend_mode" >
       </paint-js-canvas>
 
     </div>
@@ -214,6 +231,8 @@
                             { red: 80, green: 200, blue: 60 },
                             { red: 60, green: 100, blue: 120 },
         ],
+
+        blend_mode: 'normal',
 
         utility_buttons: ['Save', 'Load', 'Undo', 'Redo', 'Clear'],
 

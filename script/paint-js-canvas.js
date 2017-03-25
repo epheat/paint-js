@@ -11,7 +11,7 @@ Vue.component('paint-js-canvas', {
 
   // props are local variables that receive changes from the parent element
   // TODO: add 'tool' as a prop
-  props: ['primaryColor', 'secondaryColor', 'primaryColorStyle', 'secondaryColorStyle', 'tool'],
+  props: ['primaryColor', 'secondaryColor', 'primaryColorStyle', 'secondaryColorStyle', 'tool', 'blendMode'],
 
   // data must be a function, to keep local variables separate
   data: function() {
@@ -42,6 +42,7 @@ Vue.component('paint-js-canvas', {
     this.h = this.canvas.height;
 
     this.context.imageSmoothingEnabled = false;
+
   },
 
   // Component methods
@@ -89,11 +90,11 @@ Vue.component('paint-js-canvas', {
 
     draw: function(x, y, draw_color) {
       if (this.tool.name == "pencil") {
-        this.drawCircle(x, y, this.tool.properties.width, draw_color);
+        this.drawCircle(x, y, this.tool.properties.width/2, draw_color);
       } else if (this.tool.name == "brush") {
 
       } else if (this.tool.name == "eraser") {
-        this.drawCircle(x, y, this.tool.properties.width, {red: 255, green: 255, blue: 255});
+        this.drawCircle(x, y, this.tool.properties.width/2, {red: 255, green: 255, blue: 255});
       } else if (this.tool.name == "bucket") {
 
       } else if (this.tool.name == "pen") {
@@ -104,6 +105,33 @@ Vue.component('paint-js-canvas', {
     },
 
     draw_line: function(x0, y0, xf, yf, draw_color) {
+      if (this.tool.name == "pencil") {
+        this.draw_line_builtin(x0, y0, xf, yf, this.tool.properties.width, draw_color);
+      } else if (this.tool.name == "brush") {
+
+      } else if (this.tool.name == "eraser") {
+        this.draw_line_builtin(x0, y0, xf, yf, this.tool.properties.width, {red: 255, green: 255, blue: 255});
+      } else if (this.tool.name == "bucket") {
+
+      } else if (this.tool.name == "pen") {
+
+      } else {
+
+      }
+
+    },
+
+    draw_line_builtin: function(x0, y0, xf, yf, width, draw_color) {
+      this.context.beginPath();
+      this.context.moveTo(x0, y0);
+      this.context.lineTo(xf, yf);
+      this.context.lineWidth = width;
+      this.context.strokeStyle = `rgba(${draw_color.red}, ${draw_color.green}, ${draw_color.blue}, 255)`;
+      this.context.lineCap = 'round';
+      this.context.stroke();
+    },
+
+    draw_line_bresenham: function(x0, y0, xf, yf, draw_color) {
       // Draw a raster line from (prevX, prevY) to (currX, currY) using Bresenham's line algorithm
       // https://en.wikipedia.org/wiki/Bresenham's_line_algorithm
       // http://stackoverflow.com/questions/4672279/bresenham-algorithm-in-javascript
@@ -172,10 +200,10 @@ Vue.component('paint-js-canvas', {
       var undo_data = this.context.getImageData(0, 0, this.w, this.h);
       this.undo_stack.push(undo_data);
 
-      // how many undos should we allow? 15?
+      // how many undos should we allow? 15? Is there a way to detect memory availability as our limit for undo?
       if (this.undo_stack.length > 15) {
         this.undo_stack.shift();
-        console.log("shift");
+        // console.log("shift");
       }
 
       // reset redo stack
@@ -209,6 +237,12 @@ Vue.component('paint-js-canvas', {
 
     }
 
+  },
+
+  watch: {
+    blendMode: function() {
+      this.context.globalCompositeOperation = this.blendMode;
+    }
   },
 
   computed: {
