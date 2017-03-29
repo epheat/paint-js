@@ -214,7 +214,6 @@ export default {
       // how many undos should we allow? 15? Is there a way to detect memory availability as our limit for undo?
       if (this.undo_stack.length > 15) {
         this.undo_stack.shift();
-        // console.log("shift");
       }
 
       // reset redo stack
@@ -230,6 +229,9 @@ export default {
         this.redo_stack.push(redo_data);
 
         var img_data = this.undo_stack.pop();
+        if (img_data.width != this.w && img_data.height != this.h) {
+          this.setCanvasDimensions(img_data.width, img_data.height);
+        }
         this.context.putImageData(img_data, 0, 0);
       }
 
@@ -243,6 +245,9 @@ export default {
         var undo_data = this.context.getImageData(0, 0, this.w, this.h);
         this.undo_stack.push(undo_data);
         var img_data = this.redo_stack.pop();
+        if (img_data.width != this.w && img_data.height != this.h) {
+          this.setCanvasDimensions(img_data.width, img_data.height);
+        }
         this.context.putImageData(img_data, 0, 0);
       }
 
@@ -265,6 +270,7 @@ export default {
       this.resize_flag = false;
       // save canvas content
       var img_data = this.context.getImageData(0, 0, this.w, this.h);
+      this.saveCanvasToUndoStack();
       // adjust canvas width and height
       this.h = this.resize_h;
       this.w = this.resize_w;
@@ -272,11 +278,19 @@ export default {
       // manually change canvas size according to h and w
       // if I v-bind h and w to canvas height and width, then it's bugged.
       // the binding doesn't update till the function exits, meaning I can't replace the canvas data.
-      this.canvas.width = this.w;
-      this.canvas.height = this.h;
+      this.setCanvasDimensions(this.w, this.h);
 
       // paste canvas content
       this.context.putImageData(img_data, 0, 0);
+    },
+
+    setCanvasDimensions: function(w, h) {
+      this.resize_w = w;
+      this.resize_h = h;
+      this.w = w;
+      this.h = h;
+      this.canvas.width = w;
+      this.canvas.height = h;
     }
 
   },
