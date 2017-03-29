@@ -3,10 +3,14 @@ CS 498 Group 3
 Paint.js -->
 
 <template>
-  <div>
-    <canvas id="canvas" ref="canvas" height="400px" width="400px" oncontextmenu="return false;"
+  <div id="canvas-container" ref="container">
+    <canvas id="canvas" ref="canvas" height="500px" width="500px" oncontextmenu="return false;"
       @mousedown="mouseDown" @mousemove="mouseMove" @mouseup="mouseUp" @mouseout="mouseOut">
     </canvas>
+    <div id="resizer-outline" :style="resizer_outline_style"></div>
+    <a id="resizer" :style="resizer_positioning"
+      @mousedown="beginResize" @mouseup="endResize">
+    </a>
     <br>
     prevX: {{prevX}} prevY: {{prevY}}   currX: {{currX}} currY: {{currY}}
   </div>
@@ -24,13 +28,15 @@ export default {
       canvas: null,
       context: null,
       draw_flag: false,
-      dot_flag: false,
+      resize_flag: false,
       prevX: 0,
       currX: 0,
       prevY: 0,
       currY: 0,
-      w: 0,
-      h: 0,
+      resize_w: 500,
+      resize_h: 500,
+      w: 500,
+      h: 500,
       line_width: 2,
 
       undo_stack: [],
@@ -71,8 +77,8 @@ export default {
       this.prevX = this.currX;
       this.prevY = this.currY;
 
-      this.currX = e.pageX - this.canvas.offsetLeft;
-      this.currY = e.pageY - this.canvas.offsetTop;
+      this.currX = e.pageX - this.$refs.container.offsetLeft;
+      this.currY = e.pageY - this.$refs.container.offsetTop;
 
       if (this.draw_flag) {
         // for left click, draw with primary. Right click, draw with secondary
@@ -240,6 +246,37 @@ export default {
         this.context.putImageData(img_data, 0, 0);
       }
 
+    },
+
+    // helper functions to manage canvas resizing
+    beginResize: function() {
+      this.resize_flag = true;
+    },
+    continueResize: function(e) {
+      if (this.resize_flag) {
+
+        // adjust resizer_outline width and height
+        this.resize_w = e.pageX - this.$refs.container.offsetLeft;
+        this.resize_h = e.pageY - this.$refs.container.offsetTop;
+
+      }
+    },
+    endResize: function() {
+      this.resize_flag = false;
+      // save canvas content
+      var img_data = this.context.getImageData(0, 0, this.w, this.h);
+      // adjust canvas width and height
+      this.h = this.resize_h;
+      this.w = this.resize_w;
+
+      // manually change canvas size according to h and w
+      // if I v-bind h and w to canvas height and width, then it's bugged.
+      // the binding doesn't update till the function exits, meaning I can't replace the canvas data.
+      this.canvas.width = this.w;
+      this.canvas.height = this.h;
+
+      // paste canvas content
+      this.context.putImageData(img_data, 0, 0);
     }
 
   },
@@ -251,11 +288,44 @@ export default {
   },
 
   computed: {
-
+    resizer_positioning: function() {
+      return {
+        top: (this.resize_h - 4) + "px",
+        left: (this.resize_w - 4) + "px"
+      }
+    },
+    resizer_outline_style: function() {
+      if (this.resize_flag) {
+        return {
+          outline: "1px dotted",
+          height: this.resize_h + "px",
+          width: this.resize_w + "px"
+        }
+      }
+    }
   }
 }
 </script>
 
 <style>
+
+#canvas-container {
+  position: relative;
+}
+
+#resizer-outline {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  display: inline-block;
+}
+#resizer {
+  position: absolute;
+  display: inline-block;
+  height: 7px;
+  width: 7px;
+  border: 1px solid;
+  background-color: white;
+}
 
 </style>

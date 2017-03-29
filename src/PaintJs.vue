@@ -1,5 +1,5 @@
 <template>
-  <div id="paint-js">
+  <div id="paint-js" @mousemove="mouseMove">
     <div id="toolbars">
 
       <ul class="row tab-area">
@@ -96,6 +96,8 @@
           <option>color</option>
 
         </select>
+
+
 
       </div>
 
@@ -287,6 +289,10 @@ export default {
     clearCanvas: function() {
       // execute clearCanvas() method from child
       this.$refs.paintjscanvas.clearCanvas();
+    },
+
+    mouseMove: function(e) {
+      this.$refs.paintjscanvas.continueResize(e);
     }
 
   },
@@ -316,6 +322,10 @@ body{
   top: 0;
   bottom: 0;
 }
+#paint-js {
+  height: 100%;
+}
+
 /* toolbars div is the top 150px of the screen */
 #toolbars {
   background-color: #99ccff;
@@ -325,8 +335,6 @@ body{
 /* canvas-area div is the remaining area of the screen */
 #canvas-area {
   background-color: #e6e6e6;
-  width: 100%;
-  height: calc(100% - 150px);
 
 }
 #canvas {
