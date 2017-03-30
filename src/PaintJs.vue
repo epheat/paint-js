@@ -1,5 +1,6 @@
 <template>
   <div id="paint-js" @mousemove="mouseMove">
+     <!-- @mousedown="mouseDown" @mousemove="mouseMove" @mouseup="mouseUp" -->
     <div id="toolbars">
 
       <ul class="row tab-area">
@@ -291,8 +292,15 @@ export default {
       this.$refs.paintjscanvas.clearCanvas();
     },
 
+    mouseDown: function(e) {
+      this.$refs.paintjscanvas.mouseDown(e);
+    },
     mouseMove: function(e) {
       this.$refs.paintjscanvas.continueResize(e);
+      // this.$refs.paintjscanvas.mouseMove(e);
+    },
+    mouseUp: function(e) {
+      this.$refs.paintjscanvas.mouseUp(e);
     }
 
   },

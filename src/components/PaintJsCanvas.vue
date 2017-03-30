@@ -232,7 +232,6 @@ export default {
       this.context.lineTo(xf, yf);
       this.context.lineWidth = 2;
       this.context.strokeStyle = `rgba(${draw_color.red}, ${draw_color.green}, ${draw_color.blue}, 255)`; // http://exploringjs.com/es6/ch_template-literals.html#sec_introduction-template-literals
-      this.context.lineCap = 'round';
 
       this.context.stroke();
     },
