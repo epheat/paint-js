@@ -13,7 +13,8 @@ it just doesn't show up. It is a forgiving API, but it expects you to do some ca
     <!-- TODO: Use mouse button modifiers to detect right/left click? -->
     <!-- https://vuejs.org/v2/guide/events.html#Mouse-Button-Modifiers -->
     <canvas id="canvas" ref="canvas" height="500px" width="500px" oncontextmenu="return false;"
-      @mousedown="mouseDown" @mousemove="mouseMove" @mouseup="mouseUp" @mouseout="mouseOut">
+      @mousedown="mouseDown" @mousemove="mouseMove" @mouseup="mouseUp" @mouseout="mouseOut"
+      @touchstart="mouseDown" @touchmove.prevent="mouseMove" @touchend="mouseUp">
     </canvas>
     <div id="resizer-outline" :style="resizer_outline_style"></div>
     <a id="resizer" :style="resizer_positioning"
@@ -130,7 +131,9 @@ export default {
       } else if (this.tool.name == "bucket") {
 
       } else if (this.tool.name == "pen") {
-
+        // set color blending option
+        this.context.globalCompositeOperation = this.blendMode;
+        this.draw_pen_point(x, y, this.tool.properties.width, this.tool.properties.angle, draw_color);
       } else {
 
       }
@@ -146,7 +149,7 @@ export default {
       } else if (this.tool.name == "bucket") {
 
       } else if (this.tool.name == "pen") {
-
+        this.draw_pen_stroke(x0, y0, xf, yf, this.tool.properties.width, this.tool.properties.angle, draw_color);
       } else {
 
       }
@@ -212,6 +215,26 @@ export default {
       // set alpha value for pixel to 255;
       //pixel.data[3] = 255;
       //this.context.putImageData(pixel, x - radius/2, y - radius/2);
+    },
+
+    draw_pen_stroke: function(x0, y0, xf, yf, width, angle, draw_color) {
+      this.draw_line_bresenham(x0, y0, xf, yf, draw_color);
+    },
+
+    draw_pen_point: function(x, y, width, angle, draw_color) {
+      var rad_angle = angle * Math.PI / 100;
+      var x0 = x - width/2 * Math.cos(rad_angle);
+      var y0 = y - width/2 * Math.sin(rad_angle);
+      var xf = x + width/2 * Math.cos(rad_angle);
+      var yf = y + width/2 * Math.sin(rad_angle);
+      this.context.beginPath();
+      this.context.moveTo(x0, y0);
+      this.context.lineTo(xf, yf);
+      this.context.lineWidth = 2;
+      this.context.strokeStyle = `rgba(${draw_color.red}, ${draw_color.green}, ${draw_color.blue}, 255)`; // http://exploringjs.com/es6/ch_template-literals.html#sec_introduction-template-literals
+      this.context.lineCap = 'round';
+
+      this.context.stroke();
     },
 
     clearCanvas: function() {
