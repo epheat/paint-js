@@ -1,3 +1,4 @@
 .DS_Store
 vue_src/
 bootstrap_src/
+node_modules/
