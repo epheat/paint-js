@@ -7,7 +7,7 @@
 Vue.component('paint-js-canvas', {
 
   // HTML template of the component
-  template: `<div><canvas id="canvas" ref="canvas" height="50px" width="400px" oncontextmenu="return false;" @touchstart="mouseDown" @touchmove="mouseMove" @touchend="mouseUp" @mouseout="mouseOut"></canvas><br>prevX: {{prevX}} prevY: {{prevY}}   currX: {{currX}} currY: {{currY}}</div>`,
+  template: `<div><canvas id="canvas" ref="canvas" height="50px" width="400px" oncontextmenu="return false;" @touchstart.prevent="mouseDown" @touchmove.prevent="mouseMove" @touchend="mouseUp" @touchcancel="mouseOut"></canvas><br>prevX: {{prevX}} prevY: {{prevY}}   currX: {{currX}} currY: {{currY}}</div>`,
 
   // props are local variables that receive changes from the parent element
   // TODO: add 'tool' as a prop
