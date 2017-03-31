@@ -1,21 +1,17 @@
-// epheat
-// CS 498 Group 3
-// Paint.js
-// <tool-button>
+<!-- epheat
+CS 498 Group 3
+Paint.js -->
 
-// tool-button is a component that is essentially a button that may be pressed, and stays pressed.
-Vue.component('tool-button', {
-
-  // HTML template of the component
-  template:
-  `
+<template>
   <div class="tool-button-container">
     <a href="javascript:void(0)" class="tool-button" :style="styleObject" @mousedown="mouseDown" @mouseup="mouseUp" @mouseout="mouseOut">
       {{buttonName}}
     </a>
   </div>
-  `,
+</template>
 
+<script>
+export default {
   // props are local variables that receive changes from the parent element
   props: ['buttonName', 'selected'],
 
@@ -60,6 +56,10 @@ Vue.component('tool-button', {
         boxShadow: this.boxShadowStyle,
       }
     }
-
   }
-})
+}
+</script>
+
+<style>
+
+</style>
