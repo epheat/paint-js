@@ -1,0 +1,14 @@
+{
+  "name": "paint-js",
+  "version": "0.0.0",
+  "description": "Paint.js is a simple image-editing tool built in HTML, CSS, Javascript, and frameworks Vue.js & Bootstrap, made cross-platform compatible by Electron. It has the capability to mark up existing images with text and brushes, or create original works through the use of various tools.",
+  "main": "./dist/main.js",
+  "dependencies": {
+    "bootstrap": "^3.3.7",
+    "jquery": "^3.2.1",
+    "vue": "^2.1.10",
+    "vue-electron": "^1.0.6"
+  },
+  "devDependencies": {},
+  "author": "Evan Heaton <epheat07+github@gmail.com>"
+}

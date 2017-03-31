@@ -9,3 +9,23 @@ Paint.js is the final project for CS498 Group 3:
 + Bertil Johnson
 + Corey Kirkpatrick
 + Garrett Kearns
+
+## Build Setup
+
+``` bash
+# install dependencies
+npm install
+
+# serve with hot reload at localhost:9080
+npm run dev
+
+# if you get an error at this point about improper versioning of vue and vue-template-compiler, try this command
+npm install vue-template-compiler@2.2.5
+
+# build electron app for production
+npm run build
+
+# run webpack in production
+npm run pack
+```
+More information can be found [here](https://simulatedgreg.gitbooks.io/electron-vue/content/docs/npm_scripts.html).

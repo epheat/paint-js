@@ -1,21 +1,19 @@
-// epheat
-// CS 498 Group 3
-// Paint.js
-// <utility-button>
+<!-- epheat
+CS 498 Group 3
+Paint.js -->
 
-// utility-button is a component that is essentially a button that may be pressed, and fires an event when it is pressed.
-Vue.component('utility-button', {
+<!-- utility-button is a component that is essentially a button that may be pressed, and fires an event when it is pressed. -->
 
-  // HTML template of the component
-  template:
-  `
+<template>
   <div class="button-container">
     <a href="javascript:void(0)" class="button" v-bind:style="styleObject" v-on:mousedown="mouseDown" v-on:mouseup="mouseUp" v-on:mouseout="mouseOut">
       {{buttonName}}
     </a>
   </div>
-  `,
+</template>
 
+<script>
+export default {
   // props are local variables that receive changes from the parent element
   props: ['buttonName'],
 
@@ -60,6 +58,10 @@ Vue.component('utility-button', {
         boxShadow: this.boxShadowStyle,
       }
     }
-
   }
-})
+}
+</script>
+
+<style>
+
+</style>
