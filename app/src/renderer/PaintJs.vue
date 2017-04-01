@@ -59,15 +59,15 @@
             @customswatch="customSwatchFromSecondary">
           </color-selector>
           <color-sliders
+            v-if="primary_selected"
             ref="primarycolorsliders"
             :color-prop="primary_color"
-            :visible="primary_selected"
             @colorchanged="updatePrimaryColor">
           </color-sliders>
           <color-sliders
+            v-if="secondary_selected"
             ref="secondarycolorsliders"
             :color-prop="secondary_color"
-            :visible="secondary_selected"
             @colorchanged="updateSecondaryColor">
           </color-sliders>
         </div>
@@ -115,8 +115,6 @@
       ref="paintjscanvas"
       :primary-color="primary_color"
       :secondary-color="secondary_color"
-      :primary-color-style="primary_style"
-      :secondary-color-style="secondary_style"
       :tool="tools[tool_selected]"
       :blend-mode="blend_mode" >
       </paint-js-canvas>
@@ -152,8 +150,8 @@ export default {
 
       tool_selected: 0,
 
-      primary_color: {red: 0, green: 0, blue: 0},
-      secondary_color: {red: 0, green: 0, blue: 0},
+      primary_color: {red: 0, green: 0, blue: 0, alpha: 255},
+      secondary_color: {red: 0, green: 0, blue: 0, alpha: 255},
 
       primary_swatch_name: 'Primary',
       secondary_swatch_name: 'Secondary',
@@ -162,36 +160,36 @@ export default {
       primary_style: 'rgba(0, 0, 0, 1)',
       secondary_style: 'rgba(0, 0, 0, 1)',
 
-      swatches:         [ { red: 255, green: 0, blue: 0 },
-                          { red: 200, green: 20, blue: 40 },
-                          { red: 160, green: 40, blue: 80 },
-                          { red: 120, green: 60, blue: 120 },
-                          { red: 80, green: 80, blue: 160 },
-                          { red: 40, green: 100, blue: 200 },
-                          { red: 0, green: 120, blue: 255 },
-                          { red: 20, green: 140, blue: 0 },
-                          { red: 40, green: 160, blue: 40 },
-                          { red: 60, green: 180, blue: 80 },
-                          { red: 80, green: 200, blue: 120 },
-                          { red: 100, green: 220, blue: 160 },
-                          { red: 120, green: 240, blue: 200 },
-                          { red: 140, green: 255, blue: 240 },
-                          { red: 160, green: 0, blue: 255 },
-                          { red: 180, green: 40, blue: 240 },
-                          { red: 200, green: 80, blue: 220 },
-                          { red: 220, green: 120, blue: 200 },
-                          { red: 240, green: 160, blue: 180 },
-                          { red: 255, green: 200, blue: 160 },
-                          { red: 240, green: 255, blue: 140 },
-                          { red: 220, green: 180, blue: 120 },
-                          { red: 200, green: 100, blue: 100 },
-                          { red: 180, green: 0, blue: 80 },
-                          { red: 160, green: 100, blue: 60 },
-                          { red: 140, green: 180, blue: 40 },
-                          { red: 120, green: 255, blue: 20 },
-                          { red: 100, green: 240, blue: 0 },
-                          { red: 80, green: 200, blue: 60 },
-                          { red: 60, green: 100, blue: 120 }
+      swatches:         [ { red: 255, green: 0, blue: 0, alpha: 255 },
+                          { red: 200, green: 20, blue: 40, alpha: 255 },
+                          { red: 160, green: 40, blue: 80, alpha: 255 },
+                          { red: 120, green: 60, blue: 120, alpha: 255 },
+                          { red: 80, green: 80, blue: 160, alpha: 255 },
+                          { red: 40, green: 100, blue: 200, alpha: 255 },
+                          { red: 0, green: 120, blue: 255, alpha: 255 },
+                          { red: 20, green: 140, blue: 0, alpha: 255 },
+                          { red: 40, green: 160, blue: 40, alpha: 255 },
+                          { red: 60, green: 180, blue: 80, alpha: 255 },
+                          { red: 80, green: 200, blue: 120, alpha: 255 },
+                          { red: 100, green: 220, blue: 160, alpha: 255 },
+                          { red: 120, green: 240, blue: 200, alpha: 255 },
+                          { red: 140, green: 255, blue: 240, alpha: 255 },
+                          { red: 160, green: 0, blue: 255, alpha: 255 },
+                          { red: 180, green: 40, blue: 240, alpha: 255 },
+                          { red: 200, green: 80, blue: 220, alpha: 255 },
+                          { red: 220, green: 120, blue: 200, alpha: 255 },
+                          { red: 240, green: 160, blue: 180, alpha: 255 },
+                          { red: 255, green: 200, blue: 160, alpha: 255 },
+                          { red: 240, green: 255, blue: 140, alpha: 255 },
+                          { red: 220, green: 180, blue: 120, alpha: 255 },
+                          { red: 200, green: 100, blue: 100, alpha: 255 },
+                          { red: 180, green: 0, blue: 80, alpha: 255 },
+                          { red: 160, green: 100, blue: 60, alpha: 255 },
+                          { red: 140, green: 180, blue: 40, alpha: 255 },
+                          { red: 120, green: 255, blue: 20, alpha: 255 },
+                          { red: 100, green: 240, blue: 0, alpha: 255 },
+                          { red: 80, green: 200, blue: 60, alpha: 255 },
+                          { red: 60, green: 100, blue: 120, alpha: 255 }
       ],
 
       blend_mode: 'normal',
@@ -226,15 +224,17 @@ export default {
     },
 
     updatePrimaryColor: function(e) {
-      this.primary_color.red = e.red;
-      this.primary_color.green = e.green;
-      this.primary_color.blue = e.blue;
+      this.primary_color.red = e.color.red;
+      this.primary_color.green = e.color.green;
+      this.primary_color.blue = e.color.blue;
+      this.primary_color.alpha = e.color.alpha
       this.primary_style = e.color_style;
     },
     updateSecondaryColor: function(e) {
       this.secondary_color.red = e.red;
       this.secondary_color.green = e.green;
       this.secondary_color.blue = e.blue;
+      this.secondary_color.alpha = e.color.alpha;
       this.secondary_style = e.color_style;
     },
 
@@ -252,13 +252,15 @@ export default {
         this.primary_color.red = e.rgb.red;
         this.primary_color.green = e.rgb.green;
         this.primary_color.blue = e.rgb.blue;
-        this.primary_style = "rgba(" + this.primary_color.red + ", " + this.primary_color.green + ", " + this.primary_color.blue + ", 1)";
+        this.primary_color.alpha = e.rgb.alpha;
+        this.primary_style = "rgba(" + this.primary_color.red + ", " + this.primary_color.green + ", " + this.primary_color.blue + ", " + this.primary_color.alpha + ")";
         this.$refs.primarycolorsliders.updateChannels();
       } else {
         this.secondary_color.red = e.rgb.red;
         this.secondary_color.green = e.rgb.green;
         this.secondary_color.blue = e.rgb.blue;
-        this.secondary_style = "rgba(" + this.secondary_color.red + ", " + this.secondary_color.green + ", " + this.secondary_color.blue + ", 1)";
+        this.secondary_color.alpha = e.rgb.alpha;
+        this.secondary_style = "rgba(" + this.secondary_color.red + ", " + this.secondary_color.green + ", " + this.secondary_color.blue + ", " + this.secondary_color.alpha + ")";
         this.$refs.secondarycolorsliders.updateChannels();
       }
     },
@@ -268,11 +270,11 @@ export default {
     },
 
     customSwatchFromPrimary: function() {
-      this.swatches.splice(this.swatches.length, 0, {red: this.primary_color.red, green: this.primary_color.green, blue: this.primary_color.blue});
+      this.swatches.splice(this.swatches.length, 0, {red: this.primary_color.red, green: this.primary_color.green, blue: this.primary_color.blue, alpha: this.primary_color.alpha});
     },
 
     customSwatchFromSecondary: function() {
-      this.swatches.splice(this.swatches.length, 0, {red: this.secondary_color.red, green: this.secondary_color.green, blue: this.secondary_color.blue});
+      this.swatches.splice(this.swatches.length, 0, {red: this.secondary_color.red, green: this.secondary_color.green, blue: this.secondary_color.blue, alpha: this.primary_color.alpha});
     },
 
     saveCanvas: function() {
@@ -408,19 +410,6 @@ body{
   width: 50px;
   height: 50px;
   box-shadow: 2px 2px 2px 0px #444444;
-}
-
-.swatch {
-  display: inline-block;
-  box-shadow: 1px 1px 1px 0px #444444;
-  width: 20px;
-  height: 20px;
-  margin: 5px;
-}
-.swatch-button {
-  display: inline-block;
-  width: 100%;
-  height: 100%;
 }
 
 .swatch-container {
