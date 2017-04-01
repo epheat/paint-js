@@ -36,7 +36,7 @@ export default {
   computed: {
     styleObject: function() {
       return {
-        backgroundColor: "rgba(" + this.rgb.red + ", " + this.rgb.green + ", " + this.rgb.blue + ", 1)"
+        backgroundColor: "rgba(" + this.rgb.red + ", " + this.rgb.green + ", " + this.rgb.blue + ", " + this.rgb.alpha/255 + ")"
       }
     }
 
@@ -45,5 +45,16 @@ export default {
 </script>
 
 <style>
-
+.swatch {
+  display: inline-block;
+  box-shadow: 1px 1px 1px 0px #444444;
+  width: 20px;
+  height: 20px;
+  margin: 5px;
+}
+.swatch-button {
+  display: inline-block;
+  width: 100%;
+  height: 100%;
+}
 </style>

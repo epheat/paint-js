@@ -28,7 +28,7 @@ it just doesn't show up. It is a forgiving API, but it expects you to do some ca
 <script>
 export default {
   // props are local variables that receive changes from the parent element
-  props: ['primaryColor', 'secondaryColor', 'primaryColorStyle', 'secondaryColorStyle', 'tool', 'blendMode'],
+  props: ['primaryColor', 'secondaryColor', 'tool', 'blendMode'],
 
   // data must be a function when using components, to keep local variables separate
   data: function() {
@@ -161,7 +161,7 @@ export default {
       this.context.moveTo(x0, y0);
       this.context.lineTo(xf, yf);
       this.context.lineWidth = width;
-      this.context.strokeStyle = `rgba(${draw_color.red}, ${draw_color.green}, ${draw_color.blue}, 255)`; // http://exploringjs.com/es6/ch_template-literals.html#sec_introduction-template-literals
+      this.context.strokeStyle = `rgba(${draw_color.red}, ${draw_color.green}, ${draw_color.blue}, ${draw_color.alpha/255})`; // http://exploringjs.com/es6/ch_template-literals.html#sec_introduction-template-literals
       this.context.lineCap = 'round';
 
       this.context.stroke();
@@ -199,7 +199,7 @@ export default {
     drawCircle: function(x, y, radius, draw_color) {
       this.context.beginPath();
       this.context.arc(x, y, radius, 0, 2* Math.PI, false);
-      this.context.fillStyle =  `rgba(${draw_color.red}, ${draw_color.green}, ${draw_color.blue}, 255)`;
+      this.context.fillStyle =  `rgba(${draw_color.red}, ${draw_color.green}, ${draw_color.blue}, ${draw_color.alpha/255})`;
       this.context.fill();
 
       // TODO: use this with bresenham's midpoint algorithm
@@ -231,7 +231,7 @@ export default {
       this.context.moveTo(x0, y0);
       this.context.lineTo(xf, yf);
       this.context.lineWidth = 2;
-      this.context.strokeStyle = `rgba(${draw_color.red}, ${draw_color.green}, ${draw_color.blue}, 255)`; // http://exploringjs.com/es6/ch_template-literals.html#sec_introduction-template-literals
+      this.context.strokeStyle = `rgba(${draw_color.red}, ${draw_color.green}, ${draw_color.blue}, ${draw_color.alpha/255})`; // http://exploringjs.com/es6/ch_template-literals.html#sec_introduction-template-literals
 
       this.context.stroke();
     },
