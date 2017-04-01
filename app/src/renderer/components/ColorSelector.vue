@@ -6,6 +6,17 @@ Paint.js -->
   <div class="color-container">
     <div class="color-text">{{selectorName}}</div>
     <div class="color-box">
+      <div class="transparency-indicator">
+        <div class="transparency-white"></div>
+        <div class="transparency-grey"></div>
+        <div class="transparency-white"></div>
+        <div class="transparency-grey"></div>
+        <div class="transparency-white"></div>
+        <div class="transparency-grey"></div>
+        <div class="transparency-white"></div>
+        <div class="transparency-grey"></div>
+        <div class="transparency-white"></div>
+      </div>
       <a href="javascript:void(0)" class="color-selector" v-bind:style="styleObject" v-on:mousedown="select" oncontextmenu="return false;">
       </a>
     </div>
@@ -69,15 +80,41 @@ export default {
   text-align: center;
 }
 .color-box {
+  position: relative;
   margin-left: 10px;
   margin-right: 10px;
   width: 60px;
   height: 60px;
   box-shadow: 2px 2px 2px 0px #444444;
 }
-.color-selector {
+.transparency-indicator {
   display: inline-block;
   height: 100%;
   width: 100%;
+}
+.transparency-white {
+  padding: 0px;
+  margin: 0px;
+  float: left;
+  height: 33.3%;
+  width: 33.3%;
+  background-color: lightgrey;
+}
+.transparency-grey {
+  padding: 0px;
+  margin: 0px;
+  float: left;
+  height: 33.3%;
+  width: 33.3%;
+  background-color: grey;
+}
+.color-selector {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: inline-block;
+  height: 60px;
+  width: 60px;
+  opacity: 1;
 }
 </style>

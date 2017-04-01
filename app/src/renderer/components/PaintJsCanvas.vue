@@ -74,7 +74,7 @@ export default {
       // right before any changes, save the state of the canvas for undo
       this.saveCanvasToUndoStack();
 
-      // set color blend options
+      // set color blend options?
 
       // draw initial dot
       if (e.which == 1) {
