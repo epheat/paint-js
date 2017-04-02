@@ -85,6 +85,7 @@
         <!-- blend modes -->
         <select v-model="blend_mode">
           <option>normal</option>
+          <option>destination-over</option>
           <option>multiply</option>
           <option>screen</option>
           <option>overlay</option>
