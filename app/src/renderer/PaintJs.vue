@@ -85,17 +85,21 @@
         <!-- blend modes -->
         <select v-model="blend_mode">
           <option>normal</option>
+          <option>multiply</option>
+          <option>screen</option>
+          <option>overlay</option>
           <option>darken</option>
           <option>lighten</option>
-          <option>luminosity</option>
-          <option>overlay</option>
           <option>color-dodge</option>
           <option>color-burn</option>
-          <option>difference</option>
           <option>hard-light</option>
           <option>soft-light</option>
+          <option>difference</option>
+          <option>exclusion</option>
+          <option>hue</option>
+          <option>saturation</option>
           <option>color</option>
-
+          <option>luminosity</option>
         </select>
 
 
@@ -346,11 +350,6 @@ body{
 #canvas-area {
   background-color: #e6e6e6;
 
-}
-#canvas {
-  background-color: white;
-  cursor: crosshair;
-  box-shadow: 0px 0px 0px 1px #000000 inset;
 }
 
 .tab {

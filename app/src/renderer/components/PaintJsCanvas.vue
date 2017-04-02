@@ -12,9 +12,11 @@ it just doesn't show up. It is a forgiving API, but it expects you to do some ca
   <div id="canvas-container" ref="container">
     <!-- TODO: Use mouse button modifiers to detect right/left click? -->
     <!-- https://vuejs.org/v2/guide/events.html#Mouse-Button-Modifiers -->
-    <canvas id="canvas" ref="canvas" height="500px" width="500px" oncontextmenu="return false;"
-      @mousedown="mouseDown" @mousemove="mouseMove" @mouseup="mouseUp" @mouseout="mouseOut"
-      @touchstart="mouseDown" @touchmove.prevent="mouseMove" @touchend="mouseUp">
+    <canvas id="saved-canvas" ref="canvas" height="500px" width="500px" oncontextmenu="return false;"
+      @mousedown="mouseDown" @mousemove="mouseMove" @mouseup="mouseUp" @mouseout="mouseOut">
+    </canvas>
+    <canvas id="stroke-canvas" ref="strokecanvas" height="500px" width="500px" oncontextmenu="return false;"
+      @mousedown="mouseDown" @mousemove="mouseMove" @mouseup="mouseUp" @mouseout="mouseOut">
     </canvas>
     <div id="resizer-outline" :style="resizer_outline_style"></div>
     <a id="resizer" :style="resizer_positioning"
@@ -33,9 +35,13 @@ export default {
   // data must be a function when using components, to keep local variables separate
   data: function() {
     return {
-      canvas: null,
+      saved_canvas: null,
       context: null,
+      stroke_canvas: null,
+      s_context: null,
+      points: [],
       draw_flag: false,
+      dot_flag: false,
       resize_flag: false,
       prevX: 0,
       currX: 0,
@@ -56,13 +62,15 @@ export default {
   // basically, called once the page is initialized
   mounted: function() {
 
-    //
-    this.canvas = this.$refs.canvas;
-    this.context = this.canvas.getContext("2d");
-    this.w = this.canvas.width;
-    this.h = this.canvas.height;
+    this.saved_canvas = this.$refs.canvas;
+    this.stroke_canvas = this.$refs.strokecanvas;
+    this.context = this.saved_canvas.getContext("2d");
+    this.s_context = this.stroke_canvas.getContext("2d");
+    this.w = this.saved_canvas.width;
+    this.h = this.saved_canvas.height;
 
     this.context.imageSmoothingEnabled = false;
+    this.s_context.imageSmoothingEnabled = false;
 
   },
 
@@ -74,9 +82,7 @@ export default {
       // right before any changes, save the state of the canvas for undo
       this.saveCanvasToUndoStack();
 
-      // set color blend options?
-
-      // draw initial dot
+      // start drawing - set draw style, etc.
       if (e.which == 1) {
         this.draw(this.currX, this.currY, this.primaryColor);
       } else {
@@ -85,6 +91,7 @@ export default {
 
       // so that when we start moving the mouse, we'll know if we're drawing a line or not
       this.draw_flag = true;
+      this.dot_flag = true;
     },
     mouseMove: function(e) {
 
@@ -96,6 +103,7 @@ export default {
       this.currY = e.pageY - this.$refs.container.offsetTop;
 
       if (this.draw_flag) {
+        this.dot_flag = false;
         // for left click, draw with primary. Right click, draw with secondary
         if (e.which == 1) {
           this.draw_line(this.prevX, this.prevY, this.currX, this.currY, this.primaryColor);
@@ -109,31 +117,59 @@ export default {
 
       this.draw_flag = false;
 
+      if (e.which == 1) {
+        this.end_draw(this.currX, this.currY, this.primaryColor);
+      } else {
+        this.end_draw(this.currX, this.currY, this.secondaryColor);
+      }
+
+      this.points.length = 0;
+
+      this.place_stroke_canvas();
+
     },
     mouseOut: function(e) {
 
       // TODO: detect mousemove even outside of the canvas, to allow greater drawing flexibility
       this.draw_flag = false;
 
+      // this.place_stroke_canvas();
+
+    },
+
+    place_stroke_canvas: function() {
+      this.context.drawImage(this.stroke_canvas, 0, 0);
+      this.s_context.clearRect(0, 0, this.w, this.h);
     },
 
     draw: function(x, y, draw_color) {
       if (this.tool.name == "pencil") {
         // set color blending option
         this.context.globalCompositeOperation = this.blendMode;
-        this.drawCircle(x, y, this.tool.properties.width/2, draw_color);
-      } else if (this.tool.name == "brush") {
+        this.s_context.lineWidth = this.tool.properties.width;
+        this.s_context.strokeStyle = `rgba(${draw_color.red}, ${draw_color.green}, ${draw_color.blue}, ${draw_color.alpha/255})`; // http://exploringjs.com/es6/ch_template-literals.html#sec_introduction-template-literals
+        this.s_context.fillStyle = `rgba(${draw_color.red}, ${draw_color.green}, ${draw_color.blue}, ${draw_color.alpha/255})`;
+        this.s_context.lineCap = 'round';
+        this.s_context.lineJoin = 'round';
 
+        this.points.push({x: this.currX, y: this.currY});
+
+      } else if (this.tool.name == "brush") {
+        // set color blending option
+        this.context.globalCompositeOperation = this.blendMode;
+        this.points.push({x: this.currX, y: this.currY});
       } else if (this.tool.name == "eraser") {
         // set color blending option to normal
         this.context.globalCompositeOperation = "normal";
-        this.drawCircle(x, y, this.tool.properties.width/2, {red: 255, green: 255, blue: 255});
+        this.drawCircle(x, y, this.tool.properties.width/2, {red: 255, green: 255, blue: 255, alpha: 255});
       } else if (this.tool.name == "bucket") {
 
       } else if (this.tool.name == "pen") {
         // set color blending option
         this.context.globalCompositeOperation = this.blendMode;
-        this.draw_pen_point(x, y, this.tool.properties.width, this.tool.properties.angle, draw_color);
+        this.s_context.fillStyle = `rgba(${draw_color.red}, ${draw_color.green}, ${draw_color.blue}, ${draw_color.alpha/255})`;
+
+        this.push_pen_slice(x, y, this.tool.properties.width, this.tool.properties.angle);
       } else {
 
       }
@@ -141,19 +177,67 @@ export default {
 
     draw_line: function(x0, y0, xf, yf, draw_color) {
       if (this.tool.name == "pencil") {
-        this.draw_line_builtin(x0, y0, xf, yf, this.tool.properties.width, draw_color);
+        this.points.push({x: xf, y: yf});
+        this.render_points_array_pencil();
+
       } else if (this.tool.name == "brush") {
 
       } else if (this.tool.name == "eraser") {
-        this.draw_line_builtin(x0, y0, xf, yf, this.tool.properties.width, {red: 255, green: 255, blue: 255});
+        this.draw_line_builtin(x0, y0, xf, yf, this.tool.properties.width, {red: 255, green: 255, blue: 255, alpha: 255});
       } else if (this.tool.name == "bucket") {
 
       } else if (this.tool.name == "pen") {
-        this.draw_pen_stroke(x0, y0, xf, yf, this.tool.properties.width, this.tool.properties.angle, draw_color);
+        this.push_pen_slice(xf, yf, this.tool.properties.width, this.tool.properties.angle);
+        this.render_points_array_pen();
       } else {
 
       }
 
+    },
+
+    end_draw: function(x, y, draw_color) {
+      if (this.tool.name == "pencil") {
+        if (this.dot_flag) {
+          this.drawCircle(x, y, this.tool.properties.width/2, draw_color);
+        }
+      } else if (this.tool.name == "brush") {
+
+      } else if (this.tool.name == "eraser") {
+
+      } else if (this.tool.name == "bucket") {
+
+      } else if (this.tool.name == "pen") {
+        if (this.dot_flag) {
+          this.draw_pen_slice(this.points[0].x, this.points[0].y, this.points[1].x, this.points[1].y, this.tool.properties.width, this.tool.properties.angle, draw_color);
+        }
+      } else {
+
+      }
+    },
+
+    render_points_array_pencil: function() {
+      this.s_context.clearRect(0, 0, this.w, this.h);
+
+      this.s_context.beginPath();
+      this.s_context.moveTo(this.points[0].x, this.points[0].y);
+      for (var i=1; i<this.points.length; i++) {
+        this.s_context.lineTo(this.points[i].x, this.points[i].y);
+      }
+      this.s_context.stroke();
+    },
+
+    render_points_array_pen: function() {
+      this.s_context.clearRect(0, 0, this.w, this.h);
+
+      this.s_context.beginPath();
+      this.s_context.moveTo(this.points[0].x, this.points[0].y);
+      for (var i=2; i<this.points.length; i+=2) {
+        this.s_context.lineTo(this.points[i].x, this.points[i].y);
+      }
+      for (var i=this.points.length-1; i>=0; i-=2) {
+        this.s_context.lineTo(this.points[i].x, this.points[i].y);
+      }
+      this.s_context.fill('nonzero');
     },
 
     draw_line_builtin: function(x0, y0, xf, yf, width, draw_color) {
@@ -197,28 +281,30 @@ export default {
     },
 
     drawCircle: function(x, y, radius, draw_color) {
-      this.context.beginPath();
-      this.context.arc(x, y, radius, 0, 2* Math.PI, false);
-      this.context.fillStyle =  `rgba(${draw_color.red}, ${draw_color.green}, ${draw_color.blue}, ${draw_color.alpha/255})`;
-      this.context.fill();
-
-      // TODO: use this with bresenham's midpoint algorithm
-      //var color = [draw_color.red, draw_color.green, draw_color.blue, 255];
-      //var pixel = this.context.createImageData(radius, radius);
-      //for (var i = 0; i < 4*radius*radius; i++) {
-        //pixel.data[i] = color[i%4];
-      //}
-      // set the pixel to the draw_color
-      //pixel.data[0] = draw_color.red;
-      //pixel.data[1] = draw_color.green;
-      //pixel.data[2] = draw_color.blue;
-      // set alpha value for pixel to 255;
-      //pixel.data[3] = 255;
-      //this.context.putImageData(pixel, x - radius/2, y - radius/2);
+      this.s_context.fillStyle = `rgba(${draw_color.red}, ${draw_color.green}, ${draw_color.blue}, ${draw_color.alpha/255})`;
+      this.s_context.beginPath();
+      this.s_context.arc(x, y, radius, 0, 2* Math.PI, false);
+      this.s_context.fill();
     },
 
-    draw_pen_stroke: function(x0, y0, xf, yf, width, angle, draw_color) {
-      this.draw_line_bresenham(x0, y0, xf, yf, draw_color);
+    push_pen_slice: function(x, y, width, angle) {
+      var rad_angle = angle * Math.PI / 100;
+      var x0 = x - width/2 * Math.cos(rad_angle);
+      var y0 = y - width/2 * Math.sin(rad_angle);
+      var xf = x + width/2 * Math.cos(rad_angle);
+      var yf = y + width/2 * Math.sin(rad_angle);
+      this.points.push({x: x0, y: y0});
+      this.points.push({x: xf, y: yf});
+    },
+
+    draw_pen_slice: function(x0, y0, xf, yf, width, angle, draw_color) {
+      this.s_context.beginPath();
+      this.s_context.moveTo(x0, y0);
+      this.s_context.lineTo(xf, yf);
+      this.s_context.lineWidth = 2;
+      this.s_context.strokeStyle = `rgba(${draw_color.red}, ${draw_color.green}, ${draw_color.blue}, ${draw_color.alpha/255})`; // http://exploringjs.com/es6/ch_template-literals.html#sec_introduction-template-literals
+
+      this.s_context.stroke();
     },
 
     draw_pen_point: function(x, y, width, angle, draw_color) {
@@ -339,8 +425,10 @@ export default {
       this.resize_h = h;
       this.w = w;
       this.h = h;
-      this.canvas.width = w;
-      this.canvas.height = h;
+      this.saved_canvas.width = w;
+      this.saved_canvas.height = h;
+      this.stroke_canvas.width = w;
+      this.stroke_canvas.height = h;
     }
 
   },
@@ -366,7 +454,17 @@ export default {
 </script>
 
 <style>
-
+#saved-canvas {
+  background-color: white;
+  cursor: crosshair;
+  box-shadow: 0px 0px 0px 1px #000000 inset;
+}
+#stroke-canvas {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  cursor: crosshair;
+}
 #canvas-container {
   position: relative;
 }

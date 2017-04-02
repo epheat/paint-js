@@ -4,6 +4,12 @@ Paint.js -->
 
 <template>
   <div class="swatch">
+    <div class="transparency-indicator">
+      <div class="swatch-transparency-white"></div>
+      <div class="swatch-transparency-grey"></div>
+      <div class="swatch-transparency-grey"></div>
+      <div class="swatch-transparency-white"></div>
+    </div>
     <a href="javascript:void(0)" class="swatch-button" :style="styleObject" @mousedown="click" oncontextmenu="return false;"></a>
   </div>
 </template>
@@ -46,6 +52,7 @@ export default {
 
 <style>
 .swatch {
+  position: relative;
   display: inline-block;
   box-shadow: 1px 1px 1px 0px #444444;
   width: 20px;
@@ -53,8 +60,33 @@ export default {
   margin: 5px;
 }
 .swatch-button {
+  position: absolute;
+  top: 0;
+  left: 0;
   display: inline-block;
-  width: 100%;
+  height: 20px;
+  width: 20px;
+  opacity: 1;
+}
+.transparency-indicator {
+  display: inline-block;
   height: 100%;
+  width: 100%;
+}
+.swatch-transparency-white {
+  padding: 0px;
+  margin: 0px;
+  float: left;
+  height: 50%;
+  width: 50%;
+  background-color: lightgrey;
+}
+.swatch-transparency-grey {
+  padding: 0px;
+  margin: 0px;
+  float: left;
+  height: 50%;
+  width: 50%;
+  background-color: grey;
 }
 </style>
