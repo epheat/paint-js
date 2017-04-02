@@ -50,7 +50,7 @@ export default {
       this.channel_R = this.colorProp.red;
       this.channel_G = this.colorProp.green;
       this.channel_B = this.colorProp.blue;
-      this.chanel_A = this.colorProp.alpha;
+      this.channel_A = this.colorProp.alpha;
     }
   }
 }
