@@ -160,7 +160,7 @@ export default {
         this.points.push({x: this.currX, y: this.currY});
       } else if (this.tool.name == "eraser") {
         // set color blending option to normal
-        this.context.globalCompositeOperation = "normal";
+        this.context.globalCompositeOperation = "destination-out";
         this.drawCircle(x, y, this.tool.properties.width/2, {red: 255, green: 255, blue: 255, alpha: 255});
       } else if (this.tool.name == "bucket") {
 
