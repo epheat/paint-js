@@ -236,9 +236,9 @@ export default {
       this.primary_style = e.color_style;
     },
     updateSecondaryColor: function(e) {
-      this.secondary_color.red = e.red;
-      this.secondary_color.green = e.green;
-      this.secondary_color.blue = e.blue;
+      this.secondary_color.red = e.color.red;
+      this.secondary_color.green = e.color.green;
+      this.secondary_color.blue = e.color.blue;
       this.secondary_color.alpha = e.color.alpha;
       this.secondary_style = e.color_style;
     },

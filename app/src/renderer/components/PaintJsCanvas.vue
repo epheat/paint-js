@@ -8,6 +8,8 @@ This is great when you animate a canvas, but in simple plotting cases it gets an
 The good news is that if you paint beyond the size of a canvas there is no error -
 it just doesn't show up. It is a forgiving API, but it expects you to do some calculation work beforehand. -->
 
+<!-- http://exploringjs.com/es6/ch_template-literals.html#sec_introduction-template-literals -->
+
 <template>
   <div id="canvas-container" ref="container">
     <!-- TODO: Use mouse button modifiers to detect right/left click? -->
@@ -147,7 +149,8 @@ export default {
         // set color blending option
         this.context.globalCompositeOperation = this.blendMode;
         this.s_context.lineWidth = this.tool.properties.width;
-        this.s_context.strokeStyle = `rgba(${draw_color.red}, ${draw_color.green}, ${draw_color.blue}, ${draw_color.alpha/255})`; // http://exploringjs.com/es6/ch_template-literals.html#sec_introduction-template-literals
+        this.s_context.strokeStyle = `rgba(${draw_color.red}, ${draw_color.green}, ${draw_color.blue}, ${draw_color.alpha/255})`;
+
         this.s_context.fillStyle = `rgba(${draw_color.red}, ${draw_color.green}, ${draw_color.blue}, ${draw_color.alpha/255})`;
         this.s_context.lineCap = 'round';
         this.s_context.lineJoin = 'round';
@@ -178,6 +181,7 @@ export default {
     draw_line: function(x0, y0, xf, yf, draw_color) {
       if (this.tool.name == "pencil") {
         this.points.push({x: xf, y: yf});
+
         this.render_points_array_pencil();
 
       } else if (this.tool.name == "brush") {
