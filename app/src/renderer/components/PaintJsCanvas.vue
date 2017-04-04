@@ -171,7 +171,6 @@ export default {
         // set color blending option
         this.context.globalCompositeOperation = this.blendMode;
         this.s_context.fillStyle = `rgba(${draw_color.red}, ${draw_color.green}, ${draw_color.blue}, ${draw_color.alpha/255})`;
-
         this.push_pen_slice(x, y, this.tool.properties.width, this.tool.properties.angle);
       } else {
 
@@ -231,17 +230,27 @@ export default {
     },
 
     render_points_array_pen: function() {
+      var rad_angle = this.tool.properties.angle * Math.PI / 100;
+      console.log(rad_angle);
       this.s_context.clearRect(0, 0, this.w, this.h);
-
       this.s_context.beginPath();
-      this.s_context.moveTo(this.points[0].x, this.points[0].y);
-      for (var i=2; i<this.points.length; i+=2) {
-        this.s_context.lineTo(this.points[i].x, this.points[i].y);
+      for (var i=0; i<=this.points.length-4; i+=2) {
+        // change from counterclockwise to clockwise if there is a change in direction
+        if (this.points[i].y * Math.cos(rad_angle) + this.points[i].x * Math.sin(rad_angle) < this.points[i+2].y * Math.cos(rad_angle) + this.points[i+2].x * Math.sin(rad_angle)) {
+          this.s_context.moveTo(this.points[i].x, this.points[i].y);
+          this.s_context.lineTo(this.points[i+2].x, this.points[i+2].y);
+          this.s_context.lineTo(this.points[i+3].x, this.points[i+3].y);
+          this.s_context.lineTo(this.points[i+1].x, this.points[i+1].y);
+          this.s_context.lineTo(this.points[i].x, this.points[i].y);
+        } else {
+          this.s_context.moveTo(this.points[i].x, this.points[i].y);
+          this.s_context.lineTo(this.points[i+1].x, this.points[i+1].y);
+          this.s_context.lineTo(this.points[i+3].x, this.points[i+3].y);
+          this.s_context.lineTo(this.points[i+2].x, this.points[i+2].y);
+          this.s_context.lineTo(this.points[i].x, this.points[i].y);
+        }
       }
-      for (var i=this.points.length-1; i>=0; i-=2) {
-        this.s_context.lineTo(this.points[i].x, this.points[i].y);
-      }
-      this.s_context.fill('nonzero');
+      this.s_context.fill();
     },
 
     draw_line_builtin: function(x0, y0, xf, yf, width, draw_color) {
@@ -293,9 +302,9 @@ export default {
 
     push_pen_slice: function(x, y, width, angle) {
       var rad_angle = angle * Math.PI / 100;
-      var x0 = x - width/2 * Math.cos(rad_angle);
+      var x0 = x + width/2 * Math.cos(rad_angle);
       var y0 = y - width/2 * Math.sin(rad_angle);
-      var xf = x + width/2 * Math.cos(rad_angle);
+      var xf = x - width/2 * Math.cos(rad_angle);
       var yf = y + width/2 * Math.sin(rad_angle);
       this.points.push({x: x0, y: y0});
       this.points.push({x: xf, y: yf});
