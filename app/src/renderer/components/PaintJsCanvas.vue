@@ -160,17 +160,29 @@ export default {
       } else if (this.tool.name == "brush") {
         // set color blending option
         this.context.globalCompositeOperation = this.blendMode;
+        this.s_context.lineWidth = this.tool.properties.width;
+        this.s_context.shadowBlur = (150 - 1.5 * this.tool.properties.hardness);
+        this.s_context.strokeStyle = `rgba(${draw_color.red}, ${draw_color.green}, ${draw_color.blue}, ${draw_color.alpha/255})`;
+        this.s_context.fillStyle = `rgba(${draw_color.red}, ${draw_color.green}, ${draw_color.blue}, ${draw_color.alpha/255})`;
+        this.s_context.shadowColor = `rgba(${draw_color.red}, ${draw_color.green}, ${draw_color.blue}, ${draw_color.alpha/255})`;
+        this.s_context.lineCap = 'round';
+        this.s_context.lineJoin = 'round';
+
+
         this.points.push({x: this.currX, y: this.currY});
       } else if (this.tool.name == "eraser") {
         // set color blending option to normal
         this.context.globalCompositeOperation = "destination-out";
-        this.drawCircle(x, y, this.tool.properties.width/2, {red: 255, green: 255, blue: 255, alpha: 255});
+        this.s_context.fillStyle = 'rgba(255, 255, 255, 255)';
+        this.drawCircle(x, y, this.tool.properties.width/2);
       } else if (this.tool.name == "bucket") {
 
       } else if (this.tool.name == "pen") {
         // set color blending option
         this.context.globalCompositeOperation = this.blendMode;
         this.s_context.fillStyle = `rgba(${draw_color.red}, ${draw_color.green}, ${draw_color.blue}, ${draw_color.alpha/255})`;
+        this.s_context.strokeStyle = `rgba(${draw_color.red}, ${draw_color.green}, ${draw_color.blue}, ${draw_color.alpha/255})`;
+
         this.push_pen_slice(x, y, this.tool.properties.width, this.tool.properties.angle);
       } else {
 
@@ -180,10 +192,11 @@ export default {
     draw_line: function(x0, y0, xf, yf, draw_color) {
       if (this.tool.name == "pencil") {
         this.points.push({x: xf, y: yf});
-
         this.render_points_array_pencil();
 
       } else if (this.tool.name == "brush") {
+        this.points.push({x: xf, y: yf});
+        this.render_points_array_brush();
 
       } else if (this.tool.name == "eraser") {
         this.draw_line_builtin(x0, y0, xf, yf, this.tool.properties.width, {red: 255, green: 255, blue: 255, alpha: 255});
@@ -201,10 +214,13 @@ export default {
     end_draw: function(x, y, draw_color) {
       if (this.tool.name == "pencil") {
         if (this.dot_flag) {
-          this.drawCircle(x, y, this.tool.properties.width/2, draw_color);
+          this.drawCircle(x, y, this.tool.properties.width/2);
         }
       } else if (this.tool.name == "brush") {
-
+        if (this.dot_flag) {
+          this.draw_circle_brush(x, y, this.tool.properties.width/2);
+        }
+        this.s_context.shadowBlur = 0;
       } else if (this.tool.name == "eraser") {
 
       } else if (this.tool.name == "bucket") {
@@ -229,6 +245,22 @@ export default {
       this.s_context.stroke();
     },
 
+    render_points_array_brush: function() {
+      this.s_context.clearRect(0, 0, this.w, this.h);
+
+      var offset = 100000;
+      this.s_context.translate(-offset, 0);
+      this.s_context.shadowOffsetX = offset;
+
+      this.s_context.beginPath();
+      this.s_context.moveTo(this.points[0].x, this.points[0].y);
+      for (var i=1; i<this.points.length; i++) {
+        this.s_context.lineTo(this.points[i].x, this.points[i].y);
+      }
+      this.s_context.stroke();
+      this.s_context.translate(offset, 0);
+    },
+
     render_points_array_pen: function() {
       var rad_angle = this.tool.properties.angle * Math.PI / 100;
       console.log(rad_angle);
@@ -236,6 +268,7 @@ export default {
       this.s_context.beginPath();
       for (var i=0; i<=this.points.length-4; i+=2) {
         // change from counterclockwise to clockwise if there is a change in direction
+        // this has to do with the "winding" of the polygon
         if (this.points[i].y * Math.cos(rad_angle) + this.points[i].x * Math.sin(rad_angle) < this.points[i+2].y * Math.cos(rad_angle) + this.points[i+2].x * Math.sin(rad_angle)) {
           this.s_context.moveTo(this.points[i].x, this.points[i].y);
           this.s_context.lineTo(this.points[i+2].x, this.points[i+2].y);
@@ -250,6 +283,7 @@ export default {
           this.s_context.lineTo(this.points[i].x, this.points[i].y);
         }
       }
+      // this.s_context.stroke();
       this.s_context.fill();
     },
 
@@ -293,11 +327,22 @@ export default {
 
     },
 
-    drawCircle: function(x, y, radius, draw_color) {
-      this.s_context.fillStyle = `rgba(${draw_color.red}, ${draw_color.green}, ${draw_color.blue}, ${draw_color.alpha/255})`;
+    drawCircle: function(x, y, radius) {
       this.s_context.beginPath();
       this.s_context.arc(x, y, radius, 0, 2* Math.PI, false);
       this.s_context.fill();
+    },
+
+    draw_circle_brush: function(x, y, radius, draw_color) {
+      var offset = 100000;
+      this.s_context.translate(-offset, 0);
+      this.s_context.shadowOffsetX = offset;
+
+      this.s_context.beginPath();
+      this.s_context.arc(x, y, radius, 0, 2* Math.PI, false);
+      this.s_context.fill();
+
+      this.s_context.translate(offset, 0);
     },
 
     push_pen_slice: function(x, y, width, angle) {
