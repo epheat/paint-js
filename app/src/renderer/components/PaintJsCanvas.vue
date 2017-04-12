@@ -248,6 +248,7 @@ export default {
     render_points_array_brush: function() {
       this.s_context.clearRect(0, 0, this.w, this.h);
 
+      // http://stackoverflow.com/questions/18970678/in-html5-canvas-how-can-i-change-the-stroke-alpha-without-affecting-the-shadow
       var offset = 100000;
       this.s_context.translate(-offset, 0);
       this.s_context.shadowOffsetX = offset;
