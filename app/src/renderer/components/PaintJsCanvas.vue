@@ -190,6 +190,7 @@ export default {
       } else if (this.tool.name == "dropper") {
 
         // TODO: dropper tool
+        var imgData = this.context.getImageData(0, 0, this.w, this.h);
 
       } else {
 
