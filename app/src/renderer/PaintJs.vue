@@ -151,6 +151,7 @@ export default {
                 { name: 'eraser', properties: { width: 5 } },
                 { name: 'bucket', properties: { leniency: 0 } },
                 { name: 'pen', properties: { width: 5, angle: 0 } },
+                { name: 'dropper', properties: {} }
               ],
 
       tool_selected: 0,
@@ -452,7 +453,7 @@ body{
 .tools-container {
   display: inline-block;
   margin-top: 30px;
-  width: 260px;
+  width: 320px;
   height: 100%;
   margin-left: 15px;
 

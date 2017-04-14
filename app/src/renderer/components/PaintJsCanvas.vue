@@ -176,6 +176,9 @@ export default {
         this.s_context.fillStyle = 'rgba(255, 255, 255, 255)';
         this.drawCircle(x, y, this.tool.properties.width/2);
       } else if (this.tool.name == "bucket") {
+        this.context.globalCompositeOperation = this.blendMode;
+
+        // TODO: call flood fill algorithm
 
       } else if (this.tool.name == "pen") {
         // set color blending option
@@ -184,6 +187,10 @@ export default {
         this.s_context.strokeStyle = `rgba(${draw_color.red}, ${draw_color.green}, ${draw_color.blue}, ${draw_color.alpha/255})`;
 
         this.push_pen_slice(x, y, this.tool.properties.width, this.tool.properties.angle);
+      } else if (this.tool.name == "dropper") {
+
+        // TODO: dropper tool
+
       } else {
 
       }
