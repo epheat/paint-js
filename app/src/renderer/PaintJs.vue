@@ -151,7 +151,7 @@ export default {
                 { name: 'eraser', properties: { width: 5 } },
                 { name: 'bucket', properties: { leniency: 0 } },
                 { name: 'pen', properties: { width: 5, angle: 0 } },
-                { name: 'dropper', properties: {} }
+                { name: 'dropper', properties: { dropperprop: 10 } }
               ],
 
       tool_selected: 0,
