@@ -86,9 +86,9 @@ export default {
 
       // start drawing - set draw style, etc.
       if (e.which == 1) {
-        this.draw(this.currX, this.currY, this.primaryColor);
+        this.draw(this.currX, this.currY, this.primaryColor, e.which);
       } else {
-        this.draw(this.currX, this.currY, this.secondaryColor);
+        this.draw(this.currX, this.currY, this.secondaryColor, e.which);
       }
 
       // so that when we start moving the mouse, we'll know if we're drawing a line or not
@@ -144,7 +144,7 @@ export default {
       this.s_context.clearRect(0, 0, this.w, this.h);
     },
 
-    draw: function(x, y, draw_color) {
+    draw: function(x, y, draw_color, which) {
       if (this.tool.name == "pencil") {
         // set color blending option
         this.context.globalCompositeOperation = this.blendMode;
@@ -191,7 +191,15 @@ export default {
 
         // TODO: dropper tool
         console.log(this.tool.properties.dropperprop);
-        var imgData = this.context.getImageData(0, 0, this.w, this.h);
+        var imgData = this.context.getImageData(x, y, 1, 1);
+        var color_dropped = { red: imgData.data[0], green: imgData.data[1], blue: imgData.data[2], alpha: imgData.data[3] };
+        var style = `rgba(${color_dropped.red}, ${color_dropped.green}, ${color_dropped.blue}, ${color_dropped.alpha})`;
+
+        if (which == 1) {
+          this.$emit('left-dropper', {color_style: style, color: {red: color_dropped.red, green: color_dropped.green, blue: color_dropped.blue, alpha: color_dropped.alpha}});
+        } else {
+          this.$emit('right-dropper', {color_style: style, color: {red: color_dropped.red, green: color_dropped.green, blue: color_dropped.blue, alpha: color_dropped.alpha}});
+        }
 
       } else {
 
@@ -273,7 +281,6 @@ export default {
 
     render_points_array_pen: function() {
       var rad_angle = this.tool.properties.angle * Math.PI / 100;
-      console.log(rad_angle);
       this.s_context.clearRect(0, 0, this.w, this.h);
       this.s_context.beginPath();
       for (var i=0; i<=this.points.length-4; i+=2) {

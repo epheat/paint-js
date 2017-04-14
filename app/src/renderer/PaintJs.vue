@@ -59,13 +59,13 @@
             @customswatch="customSwatchFromSecondary">
           </color-selector>
           <color-sliders
-            v-if="primary_selected"
+            v-show="primary_selected"
             ref="primarycolorsliders"
             :color-prop="primary_color"
             @colorchanged="updatePrimaryColor">
           </color-sliders>
           <color-sliders
-            v-if="secondary_selected"
+            v-show="secondary_selected"
             ref="secondarycolorsliders"
             :color-prop="secondary_color"
             @colorchanged="updateSecondaryColor">
@@ -121,7 +121,9 @@
       :primary-color="primary_color"
       :secondary-color="secondary_color"
       :tool="tools[tool_selected]"
-      :blend-mode="blend_mode" >
+      :blend-mode="blend_mode"
+      @left-dropper="updatePrimaryColor"
+      @right-dropper="updateSecondaryColor">
       </paint-js-canvas>
 
     </div>
@@ -235,6 +237,9 @@ export default {
       this.primary_color.blue = e.color.blue;
       this.primary_color.alpha = e.color.alpha
       this.primary_style = e.color_style;
+      if (this.primary_selected) {
+        this.$refs.primarycolorsliders.updateChannels();
+      }
     },
     updateSecondaryColor: function(e) {
       this.secondary_color.red = e.color.red;
@@ -242,15 +247,20 @@ export default {
       this.secondary_color.blue = e.color.blue;
       this.secondary_color.alpha = e.color.alpha;
       this.secondary_style = e.color_style;
+      if (this.secondary_selected) {
+        this.$refs.secondarycolorsliders.updateChannels();
+      }
     },
 
     selectPrimarySwatch: function(e) {
       this.primary_selected = true;
       this.secondary_selected = false;
+      this.$refs.primarycolorsliders.updateChannels();
     },
     selectSecondarySwatch: function(e) {
       this.secondary_selected = true;
       this.primary_selected = false;
+      this.$refs.secondarycolorsliders.updateChannels();
     },
 
     updateSelector: function(e) {
