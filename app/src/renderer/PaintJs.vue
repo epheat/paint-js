@@ -215,9 +215,7 @@ export default {
       if (utility == 0) {         // save
         this.saveCanvas();
       } else if (utility == 1) {  // load
-
-        // TODO: GARRETT
-
+        this.loadCanvas();
       } else if (utility == 2) {  // undo
         this.undoCanvas();
       } else if (utility == 3) {  // redo
@@ -296,6 +294,10 @@ export default {
     saveCanvas: function() {
       // execute saveCanvas() method from child
       this.$refs.paintjscanvas.saveCanvas();
+    },
+
+    loadCanvas: function() {
+      this.$refs.paintjscanvas.loadCanvas();
     },
 
     undoCanvas: function() {

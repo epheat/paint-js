@@ -30,6 +30,7 @@ it just doesn't show up. It is a forgiving API, but it expects you to do some ca
 </template>
 
 <script>
+const {dialog} = require('electron').remote
 export default {
   // props are local variables that receive changes from the parent element
   props: ['primaryColor', 'secondaryColor', 'tool', 'blendMode'],
@@ -404,12 +405,14 @@ export default {
       this.context.putImageData(new_canvas, 0, 0);
     },
 
-    saveCanvas: function() {
-
-      console.log("saving...");
-      // TODO: GARRETT
-
+    loadCanvas: function() {
+      dialog.showOpenDialog();
     },
+
+    saveCanvas: function() {
+      dialog.showSaveDialog();
+    },
+
 
     saveCanvasToUndoStack: function() {
       // save canvas image data to undo_stack so we can undo to that state
