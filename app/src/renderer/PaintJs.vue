@@ -233,7 +233,7 @@ export default {
       this.primary_color.red = e.color.red;
       this.primary_color.green = e.color.green;
       this.primary_color.blue = e.color.blue;
-      this.primary_color.alpha = e.color.alpha
+      this.primary_color.alpha = e.color.alpha;
       this.primary_style = e.color_style;
       if (this.primary_selected) {
         this.$refs.primarycolorsliders.updateChannels();

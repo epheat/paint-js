@@ -1,14 +1,14 @@
-'use strict'
+'use strict';
 
-process.env.BABEL_ENV = 'renderer'
+process.env.BABEL_ENV = 'renderer';
 
-const path = require('path')
-const pkg = require('./app/package.json')
-const settings = require('./config.js')
-const webpack = require('webpack')
+const path = require('path');
+const pkg = require('./app/package.json');
+const settings = require('./config.js');
+const webpack = require('webpack');
 
-const ExtractTextPlugin = require('extract-text-webpack-plugin')
-const HtmlWebpackPlugin = require('html-webpack-plugin')
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 let rendererConfig = {
   devtool: '#eval-source-map',
@@ -106,14 +106,14 @@ let rendererConfig = {
     ]
   },
   target: 'electron-renderer'
-}
+};
 
 
 /**
  * Adjust rendererConfig for production settings
  */
 if (process.env.NODE_ENV === 'production') {
-  rendererConfig.devtool = ''
+  rendererConfig.devtool = '';
 
   rendererConfig.plugins.push(
     new webpack.DefinePlugin({
@@ -130,4 +130,4 @@ if (process.env.NODE_ENV === 'production') {
   )
 }
 
-module.exports = rendererConfig
+module.exports = rendererConfig;

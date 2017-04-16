@@ -30,7 +30,7 @@ it just doesn't show up. It is a forgiving API, but it expects you to do some ca
 </template>
 
 <script>
-const {dialog} = require('electron').remote
+const fs = require('fs');
 export default {
   // props are local variables that receive changes from the parent element
   props: ['primaryColor', 'secondaryColor', 'tool', 'blendMode'],
@@ -119,8 +119,7 @@ export default {
     mouseUp: function(e) {
 
       this.draw_flag = false;
-
-      if (e.which == 1) {
+if (e.which == 1) {
         this.end_draw(this.currX, this.currY, this.primaryColor);
       } else {
         this.end_draw(this.currX, this.currY, this.secondaryColor);
@@ -406,11 +405,27 @@ export default {
     },
 
     loadCanvas: function() {
-      dialog.showOpenDialog();
+      var filepath = this.$electron.remote.dialog.showOpenDialog()[0];
+      console.log(`LOAD ${filepath}`);
     },
 
     saveCanvas: function() {
-      dialog.showSaveDialog();
+        /* Convert current canvas to base64 string */
+        var img_URI = this.saved_canvas.toDataURL();
+        var img_data = img_URI.replace(/^data:image\/\w+;base64,/, '');
+
+        // Open up a save dialog and return the desired path. Attempt to write to it;
+        // throw an error if it fails.
+        // TODO: very messy, clean up
+        this.$electron.remote.dialog.showSaveDialog({
+            filters: { name:'PNG', extensions: ['png'] }
+        }, function(filename) {
+            var buffer = new Buffer(img_data, 'base64');
+            fs.writeFile(filename, buffer, function(err) {
+                if (err) throw err;
+                console.log(`saved canvas to ${filename}`); // I now understand all hate JS gets...
+            });
+        })
     },
 
 
@@ -472,7 +487,6 @@ export default {
     },
     continueResize: function(e) {
       if (this.resize_flag) {
-
         // adjust resizer_outline width and height
         this.resize_w = e.pageX - this.$refs.container.offsetLeft;
         this.resize_h = e.pageY - this.$refs.container.offsetTop;
