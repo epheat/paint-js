@@ -180,15 +180,22 @@ export default {
 
         console.log(this.tool.properties);
         var imgData = this.context.getImageData(x, y, 1, 1);
+      //  console.log(imgData);
         var color_dropped = { red: imgData.data[0], green: imgData.data[1], blue: imgData.data[2], alpha: imgData.data[3] };
         var style = `rgba(${color_dropped.red}, ${color_dropped.green}, ${color_dropped.blue}, ${color_dropped.alpha})`;
         this.context.globalCompositeOperation = this.blendMode;
 
-        var color_picked = this.s_context.fillStyle = `rgba(${draw_color.red}, ${draw_color.green}, ${draw_color.blue}, ${draw_color.alpha/255})`;
+      //  var color_picked = this.s_context.fillStyle = `rgba(${draw_color.red}, ${draw_color.green}, ${draw_color.blue}, ${draw_color.alpha/255})`;
         //this.s_context.strokeStyle = `rgba(${draw_color.red}, ${draw_color.green}, ${draw_color.blue}, ${draw_color.alpha/255})`;
+        var imgData2 = this.context.getImageData(0, 0, this.w, this.h);
 
-        this.food_fill(x,y,color_dropped,color_picked);
-        // TODO: call flood fill algorithm
+        imgData2 = this.flood_fill(x,y,color_dropped,draw_color,imgData2);
+
+        console.log(imgData2);
+
+        this.context.putImageData(imgData2,0,0);
+
+        // TODO:  flood fill algorithm
 
       } else if (this.tool.name == "pen") {
         // set color blending option
@@ -202,6 +209,7 @@ export default {
         // TODO: dropper tool
         console.log(this.tool.properties.dropperprop);
         var imgData = this.context.getImageData(x, y, 1, 1);
+        console.log(imgData);
         var color_dropped = { red: imgData.data[0], green: imgData.data[1], blue: imgData.data[2], alpha: imgData.data[3] };
         var style = `rgba(${color_dropped.red}, ${color_dropped.green}, ${color_dropped.blue}, ${color_dropped.alpha})`;
 
@@ -261,10 +269,23 @@ export default {
       }
     },
 
-    food_fill: function (x0,y0,curr_color, fut_color) {
+    flood_fill: function (x,y,color_dropped, draw_color,imgData) {
 
+      var index = imgData.width*y+x;
+      
+      if (imgData[index] == color_dropped.red && imgData[index+1] == color_dropped.green && imgData[index+2] == color_dropped.blue && imgData[index+3] == color_dropped.alpha){
+        imgData[index] = draw_color.red;
+        imgData[index+1] = draw_color.green;
+        imgData[index+2] = draw_color.blue;
+        imgData[index+3] = draw_color.alpha;
 
+        imgData = this.flood_fill(x+1,y,color_dropped,draw_color,imgData);
+        imgData = this.flood_fill(x-1,y,color_dropped,draw_color,imgData);
+        imgData = this.flood_fill(x,y+1,color_dropped,draw_color,imgData);
+        imgData = this.flood_fill(x,y-1,color_dropped,draw_color,imgData);
+      }
 
+      return imgData;
     },
 
 
