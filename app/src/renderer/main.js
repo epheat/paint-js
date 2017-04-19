@@ -5,7 +5,7 @@ import Bootstrap from 'bootstrap/dist/css/bootstrap.min.css'
 Vue.use(Electron)
 Vue.config.debug = true
 
-import PaintJs from './Paintjs'
+import PaintJs from './PaintJs'
 
 new Vue({
   el: '#paint-js',
