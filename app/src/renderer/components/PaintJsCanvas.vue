@@ -176,8 +176,18 @@ export default {
         this.s_context.fillStyle = 'rgba(255, 255, 255, 255)';
         this.drawCircle(x, y, this.tool.properties.width/2);
       } else if (this.tool.name == "bucket") {
+
+
+        console.log(this.tool.properties);
+        var imgData = this.context.getImageData(x, y, 1, 1);
+        var color_dropped = { red: imgData.data[0], green: imgData.data[1], blue: imgData.data[2], alpha: imgData.data[3] };
+        var style = `rgba(${color_dropped.red}, ${color_dropped.green}, ${color_dropped.blue}, ${color_dropped.alpha})`;
         this.context.globalCompositeOperation = this.blendMode;
 
+        var color_picked = this.s_context.fillStyle = `rgba(${draw_color.red}, ${draw_color.green}, ${draw_color.blue}, ${draw_color.alpha/255})`;
+        //this.s_context.strokeStyle = `rgba(${draw_color.red}, ${draw_color.green}, ${draw_color.blue}, ${draw_color.alpha/255})`;
+
+        this.food_fill(x,y,color_dropped,color_picked);
         // TODO: call flood fill algorithm
 
       } else if (this.tool.name == "pen") {
@@ -199,7 +209,7 @@ export default {
           this.$emit('left-dropper', {color_style: style, color: {red: color_dropped.red, green: color_dropped.green, blue: color_dropped.blue, alpha: color_dropped.alpha}});
         } else {
           this.$emit('right-dropper', {color_style: style, color: {red: color_dropped.red, green: color_dropped.green, blue: color_dropped.blue, alpha: color_dropped.alpha}});
-        }
+         }
 
       } else {
 
@@ -250,6 +260,14 @@ export default {
 
       }
     },
+
+    food_fill: function (x0,y0,curr_color, fut_color) {
+
+
+
+    },
+
+
 
     render_points_array_pencil: function() {
       this.s_context.clearRect(0, 0, this.w, this.h);
