@@ -182,16 +182,16 @@ export default {
         var imgData = this.context.getImageData(x, y, 1, 1);
       //  console.log(imgData);
         var color_dropped = { red: imgData.data[0], green: imgData.data[1], blue: imgData.data[2], alpha: imgData.data[3] };
-        var style = `rgba(${color_dropped.red}, ${color_dropped.green}, ${color_dropped.blue}, ${color_dropped.alpha})`;
-        this.context.globalCompositeOperation = this.blendMode;
+        // var style = `rgba(${color_dropped.red}, ${color_dropped.green}, ${color_dropped.blue}, ${color_dropped.alpha})`;
+        // this.context.globalCompositeOperation = this.blendMode;
 
       //  var color_picked = this.s_context.fillStyle = `rgba(${draw_color.red}, ${draw_color.green}, ${draw_color.blue}, ${draw_color.alpha/255})`;
         //this.s_context.strokeStyle = `rgba(${draw_color.red}, ${draw_color.green}, ${draw_color.blue}, ${draw_color.alpha/255})`;
         var imgData2 = this.context.getImageData(0, 0, this.w, this.h);
 
-        imgData2 = this.flood_fill(x,y,color_dropped,draw_color,imgData2);
+        this.flood_fill(x,y,color_dropped,draw_color,imgData2);
 
-        console.log(imgData2);
+        // console.log(imgData2);
 
         this.context.putImageData(imgData2,0,0);
 
@@ -271,21 +271,22 @@ export default {
 
     flood_fill: function (x,y,color_dropped, draw_color,imgData) {
 
-      var index = imgData.width*y+x;
-      
-      if (imgData[index] == color_dropped.red && imgData[index+1] == color_dropped.green && imgData[index+2] == color_dropped.blue && imgData[index+3] == color_dropped.alpha){
-        imgData[index] = draw_color.red;
-        imgData[index+1] = draw_color.green;
-        imgData[index+2] = draw_color.blue;
-        imgData[index+3] = draw_color.alpha;
+      // console.log("(" + x + "," + y + ")");
 
-        imgData = this.flood_fill(x+1,y,color_dropped,draw_color,imgData);
-        imgData = this.flood_fill(x-1,y,color_dropped,draw_color,imgData);
-        imgData = this.flood_fill(x,y+1,color_dropped,draw_color,imgData);
-        imgData = this.flood_fill(x,y-1,color_dropped,draw_color,imgData);
+      var index = 4 * (imgData.width*y + x);
+
+      if (imgData.data[index] == color_dropped.red && imgData.data[index+1] == color_dropped.green && imgData.data[index+2] == color_dropped.blue && imgData.data[index+3] == color_dropped.alpha){
+        imgData.data[index] = draw_color.red;
+        imgData.data[index+1] = draw_color.green;
+        imgData.data[index+2] = draw_color.blue;
+        imgData.data[index+3] = draw_color.alpha;
+
+        this.flood_fill(x+1,y,color_dropped,draw_color,imgData);
+        this.flood_fill(x-1,y,color_dropped,draw_color,imgData);
+        this.flood_fill(x,y+1,color_dropped,draw_color,imgData);
+        this.flood_fill(x,y-1,color_dropped,draw_color,imgData);
       }
 
-      return imgData;
     },
 
 
