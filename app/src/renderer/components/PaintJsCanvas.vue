@@ -556,12 +556,14 @@ if (e.which == 1) {
   background-color: white;
   cursor: crosshair;
   box-shadow: 0px 0px 0px 1px #000000 inset;
+  user-select: none;
 }
 #stroke-canvas {
   position: absolute;
   top: 0px;
   left: 0px;
   cursor: crosshair;
+  user-select: none
 }
 #canvas-container {
   position: relative;
