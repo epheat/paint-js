@@ -46,6 +46,7 @@ export default {
       draw_flag: false,
       dot_flag: false,
       resize_flag: false,
+      changed_flag: false,
       prevX: 0,
       currX: 0,
       prevY: 0,
@@ -84,6 +85,11 @@ export default {
 
       // right before any changes, save the state of the canvas for undo
       this.saveCanvasToUndoStack();
+
+      // Mark file as changed. 
+      if (this.changed_flag === false) {
+        this.changed_flag = true;
+      }
 
       // start drawing - set draw style, etc.
       if (e.which == 1) {
