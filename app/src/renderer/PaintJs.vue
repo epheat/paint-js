@@ -235,7 +235,7 @@ export default {
       this.primary_color.blue = e.color.blue;
       this.primary_color.alpha = e.color.alpha;
       this.primary_style = e.color_style;
-      if (this.primary_selected) {
+      if (this.primary_selected && this.tab_selected == 2) {
         this.$refs.primarycolorsliders.updateChannels();
       }
     },
@@ -245,7 +245,7 @@ export default {
       this.secondary_color.blue = e.color.blue;
       this.secondary_color.alpha = e.color.alpha;
       this.secondary_style = e.color_style;
-      if (this.secondary_selected) {
+      if (this.secondary_selected && this.tab_selected == 2) {
         this.$refs.secondarycolorsliders.updateChannels();
       }
     },
