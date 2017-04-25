@@ -427,14 +427,10 @@ if (e.which == 1) {
     loadCanvas: function() {
       var filepath = this.$electron.remote.dialog.showOpenDialog()[0];
       var image = new Image();
-      // Following lines needed because onload function doesn't have access to them from the Vue object
-      image.ctx = this.context;
-      image.pjs_width = this.w;
-      image.pjs_height = this.h;
-
+      var parent = this;
       image.onload = function() {
-        image.pjs_width = 100; // Does not work 
-        this.ctx.drawImage(image, 0, 0);
+        parent.setCanvasDimensions(image.width, image.height);
+        parent.context.drawImage(image, 0, 0);
       }
       image.src = "data:image/  png;base64," + this.encodeFile(filepath);
     },
