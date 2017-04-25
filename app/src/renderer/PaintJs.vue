@@ -1,5 +1,5 @@
 <template>
-  <div id="paint-js" @mousemove="mouseMove">
+  <div id="paint-js" draggable="false" @mousemove="mouseMove">
      <!-- @mousedown="mouseDown" @mousemove="mouseMove" @mouseup="mouseUp" -->
     <div id="toolbars">
 
@@ -349,6 +349,7 @@ body{
   right: 0;
   top: 0;
   bottom: 0;
+  user-select: none;
 }
 #paint-js {
   height: 100%;
