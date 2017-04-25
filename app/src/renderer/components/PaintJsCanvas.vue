@@ -30,6 +30,7 @@ it just doesn't show up. It is a forgiving API, but it expects you to do some ca
 </template>
 
 <script>
+const fs = require('fs');
 export default {
   // props are local variables that receive changes from the parent element
   props: ['primaryColor', 'secondaryColor', 'tool', 'blendMode'],
@@ -45,6 +46,7 @@ export default {
       draw_flag: false,
       dot_flag: false,
       resize_flag: false,
+      changed_flag: false,
       prevX: 0,
       currX: 0,
       prevY: 0,
@@ -84,6 +86,11 @@ export default {
       // right before any changes, save the state of the canvas for undo
       this.saveCanvasToUndoStack();
 
+      // Mark file as changed. 
+      if (this.changed_flag === false) {
+        this.changed_flag = true;
+      }
+
       // start drawing - set draw style, etc.
       if (e.which == 1) {
         this.draw(this.currX, this.currY, this.primaryColor, e.which);
@@ -118,8 +125,7 @@ export default {
     mouseUp: function(e) {
 
       this.draw_flag = false;
-
-      if (e.which == 1) {
+if (e.which == 1) {
         this.end_draw(this.currX, this.currY, this.primaryColor);
       } else {
         this.end_draw(this.currX, this.currY, this.secondaryColor);
@@ -176,26 +182,9 @@ export default {
         this.s_context.fillStyle = 'rgba(255, 255, 255, 255)';
         this.drawCircle(x, y, this.tool.properties.width/2);
       } else if (this.tool.name == "bucket") {
+        this.context.globalCompositeOperation = this.blendMode;
 
-
-        console.log(this.tool.properties);
-        var imgData = this.context.getImageData(x, y, 1, 1);
-      //  console.log(imgData);
-        var color_dropped = { red: imgData.data[0], green: imgData.data[1], blue: imgData.data[2], alpha: imgData.data[3] };
-        // var style = `rgba(${color_dropped.red}, ${color_dropped.green}, ${color_dropped.blue}, ${color_dropped.alpha})`;
-        // this.context.globalCompositeOperation = this.blendMode;
-
-      //  var color_picked = this.s_context.fillStyle = `rgba(${draw_color.red}, ${draw_color.green}, ${draw_color.blue}, ${draw_color.alpha/255})`;
-        //this.s_context.strokeStyle = `rgba(${draw_color.red}, ${draw_color.green}, ${draw_color.blue}, ${draw_color.alpha/255})`;
-        var imgData2 = this.context.getImageData(0, 0, this.w, this.h);
-
-        this.flood_fill(x,y,color_dropped,draw_color,imgData2);
-
-        // console.log(imgData2);
-
-        this.context.putImageData(imgData2,0,0);
-
-        // TODO:  flood fill algorithm
+        // TODO: call flood fill algorithm
 
       } else if (this.tool.name == "pen") {
         // set color blending option
@@ -209,7 +198,6 @@ export default {
         // TODO: dropper tool
         console.log(this.tool.properties.dropperprop);
         var imgData = this.context.getImageData(x, y, 1, 1);
-        console.log(imgData);
         var color_dropped = { red: imgData.data[0], green: imgData.data[1], blue: imgData.data[2], alpha: imgData.data[3] };
         var style = `rgba(${color_dropped.red}, ${color_dropped.green}, ${color_dropped.blue}, ${color_dropped.alpha})`;
 
@@ -217,7 +205,7 @@ export default {
           this.$emit('left-dropper', {color_style: style, color: {red: color_dropped.red, green: color_dropped.green, blue: color_dropped.blue, alpha: color_dropped.alpha}});
         } else {
           this.$emit('right-dropper', {color_style: style, color: {red: color_dropped.red, green: color_dropped.green, blue: color_dropped.blue, alpha: color_dropped.alpha}});
-         }
+        }
 
       } else {
 
@@ -268,28 +256,6 @@ export default {
 
       }
     },
-
-    flood_fill: function (x,y,color_dropped, draw_color,imgData) {
-
-      // console.log("(" + x + "," + y + ")");
-
-      var index = 4 * (imgData.width*y + x);
-
-      if (imgData.data[index] == color_dropped.red && imgData.data[index+1] == color_dropped.green && imgData.data[index+2] == color_dropped.blue && imgData.data[index+3] == color_dropped.alpha){
-        imgData.data[index] = draw_color.red;
-        imgData.data[index+1] = draw_color.green;
-        imgData.data[index+2] = draw_color.blue;
-        imgData.data[index+3] = draw_color.alpha;
-
-        this.flood_fill(x+1,y,color_dropped,draw_color,imgData);
-        this.flood_fill(x-1,y,color_dropped,draw_color,imgData);
-        this.flood_fill(x,y+1,color_dropped,draw_color,imgData);
-        this.flood_fill(x,y-1,color_dropped,draw_color,imgData);
-      }
-
-    },
-
-
 
     render_points_array_pencil: function() {
       this.s_context.clearRect(0, 0, this.w, this.h);
@@ -444,12 +410,55 @@ export default {
       this.context.putImageData(new_canvas, 0, 0);
     },
 
-    saveCanvas: function() {
-
-      console.log("saving...");
-      // TODO: GARRETT
-
+    dataURItoFile: function(data_URI, filename) {
+      var arr = data_URI.split(','), mime = arr[0].match(/:(.*?);/)[1],
+        bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+      while(n--) {
+        u8arr[n] = bstr.charCodeAt(n);
+      }
+      return new File([u8arr], filename, {type:mime});
     },
+    
+    encodeFile: function(filepath) {
+      var file = fs.readFileSync(filepath);
+      return new Buffer(file).toString('base64');
+    },
+
+    loadCanvas: function() {
+      var filepath = this.$electron.remote.dialog.showOpenDialog()[0];
+      var image = new Image();
+      // Following lines needed because onload function doesn't have access to them from the Vue object
+      image.ctx = this.context;
+      image.pjs_width = this.w;
+      image.pjs_height = this.h;
+
+      image.onload = function() {
+        image.pjs_width = 100; // Does not work 
+        this.ctx.drawImage(image, 0, 0);
+      }
+      image.src = "data:image/  png;base64," + this.encodeFile(filepath);
+    },
+
+    saveCanvas: function() {
+        /* Convert current canvas to base64 string */
+        var img_URI = this.saved_canvas.toDataURL();
+      console.log(img_URI);
+        var img_data = img_URI.replace(/^data:image\/\w+;base64,/, '');
+
+        // Open up a save dialog and return the desired path. Attempt to write to it;
+        // throw an error if it fails.
+        // TODO: very messy, clean up
+        this.$electron.remote.dialog.showSaveDialog({
+            filters: { name:'PNG', extensions: ['png'] }
+        }, function(filename) {
+            var buffer = new Buffer(img_data, 'base64');
+            fs.writeFile(filename, buffer, function(err) {
+                if (err) throw err;
+                console.log(`saved canvas to ${filename}`); // I now understand all hate JS gets...
+            });
+        })
+    },
+
 
     saveCanvasToUndoStack: function() {
       // save canvas image data to undo_stack so we can undo to that state
@@ -509,7 +518,6 @@ export default {
     },
     continueResize: function(e) {
       if (this.resize_flag) {
-
         // adjust resizer_outline width and height
         this.resize_w = e.pageX - this.$refs.container.offsetLeft;
         this.resize_h = e.pageY - this.$refs.container.offsetTop;
@@ -573,14 +581,14 @@ export default {
   background-color: white;
   cursor: crosshair;
   box-shadow: 0px 0px 0px 1px #000000 inset;
-  user-style: none;
+  user-select: none;
 }
 #stroke-canvas {
   position: absolute;
   top: 0px;
   left: 0px;
   cursor: crosshair;
-  user-style: none;
+  user-select: none
 }
 #canvas-container {
   position: relative;

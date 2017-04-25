@@ -1,11 +1,11 @@
-'use strict'
+'use strict';
 
-process.env.BABEL_ENV = 'main'
+process.env.BABEL_ENV = 'main';
 
-const path = require('path')
-const pkg = require('./app/package.json')
-const settings = require('./config.js')
-const webpack = require('webpack')
+const path = require('path');
+const pkg = require('./app/package.json');
+const settings = require('./config.js');
+const webpack = require('webpack');
 
 let mainConfig = {
   entry: {
@@ -56,6 +56,6 @@ let mainConfig = {
     ]
   },
   target: 'electron-main'
-}
+};
 
-module.exports = mainConfig
+module.exports = mainConfig;

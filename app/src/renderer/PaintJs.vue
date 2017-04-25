@@ -215,9 +215,7 @@ export default {
       if (utility == 0) {         // save
         this.saveCanvas();
       } else if (utility == 1) {  // load
-
-        // TODO: GARRETT
-
+        this.loadCanvas();
       } else if (utility == 2) {  // undo
         this.undoCanvas();
       } else if (utility == 3) {  // redo
@@ -235,9 +233,9 @@ export default {
       this.primary_color.red = e.color.red;
       this.primary_color.green = e.color.green;
       this.primary_color.blue = e.color.blue;
-      this.primary_color.alpha = e.color.alpha
+      this.primary_color.alpha = e.color.alpha;
       this.primary_style = e.color_style;
-      if (this.primary_selected) {
+      if (this.primary_selected && this.tab_selected == 2) {
         this.$refs.primarycolorsliders.updateChannels();
       }
     },
@@ -247,7 +245,7 @@ export default {
       this.secondary_color.blue = e.color.blue;
       this.secondary_color.alpha = e.color.alpha;
       this.secondary_style = e.color_style;
-      if (this.secondary_selected) {
+      if (this.secondary_selected && this.tab_selected == 2) {
         this.$refs.secondarycolorsliders.updateChannels();
       }
     },
@@ -296,6 +294,10 @@ export default {
     saveCanvas: function() {
       // execute saveCanvas() method from child
       this.$refs.paintjscanvas.saveCanvas();
+    },
+
+    loadCanvas: function() {
+      this.$refs.paintjscanvas.loadCanvas();
     },
 
     undoCanvas: function() {
