@@ -410,19 +410,39 @@ if (e.which == 1) {
       this.context.putImageData(new_canvas, 0, 0);
     },
 
+    dataURItoFile: function(data_URI, filename) {
+      var arr = data_URI.split(','), mime = arr[0].match(/:(.*?);/)[1],
+        bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+      while(n--) {
+        u8arr[n] = bstr.charCodeAt(n);
+      }
+      return new File([u8arr], filename, {type:mime});
+    },
+    
+    encodeFile: function(filepath) {
+      var file = fs.readFileSync(filepath);
+      return new Buffer(file).toString('base64');
+    },
+
     loadCanvas: function() {
       var filepath = this.$electron.remote.dialog.showOpenDialog()[0];
-      var image_string = new Buffer(fs.readFileSync(filepath), 'base64');
-      var image = new window.Image();
-      this.context.drawImage(image, 0, 0);
+      var image = new Image();
+      // Following lines needed because onload function doesn't have access to them from the Vue object
+      image.ctx = this.context;
+      image.pjs_width = this.w;
+      image.pjs_height = this.h;
 
-      console.log(this.context);
-      console.log(`LOAD ${filepath}`);
+      image.onload = function() {
+        image.pjs_width = 100; // Does not work 
+        this.ctx.drawImage(image, 0, 0);
+      }
+      image.src = "data:image/  png;base64," + this.encodeFile(filepath);
     },
 
     saveCanvas: function() {
         /* Convert current canvas to base64 string */
         var img_URI = this.saved_canvas.toDataURL();
+      console.log(img_URI);
         var img_data = img_URI.replace(/^data:image\/\w+;base64,/, '');
 
         // Open up a save dialog and return the desired path. Attempt to write to it;
