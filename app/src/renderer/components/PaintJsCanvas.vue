@@ -11,7 +11,7 @@ it just doesn't show up. It is a forgiving API, but it expects you to do some ca
 <!-- http://exploringjs.com/es6/ch_template-literals.html#sec_introduction-template-literals -->
 
 <template>
-  <div id="canvas-container" ref="container">
+  <div id="canvas-container" ref="container" draggable="false">
     <!-- TODO: Use mouse button modifiers to detect right/left click? -->
     <!-- https://vuejs.org/v2/guide/events.html#Mouse-Button-Modifiers -->
     <canvas id="saved-canvas" ref="canvas" height="500px" width="500px" oncontextmenu="return false;"
@@ -588,6 +588,7 @@ if (e.which == 1) {
 }
 #canvas-container {
   position: relative;
+  user-select: none;
 }
 
 #resizer-outline {
