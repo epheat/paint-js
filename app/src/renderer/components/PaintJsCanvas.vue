@@ -412,6 +412,11 @@ if (e.which == 1) {
 
     loadCanvas: function() {
       var filepath = this.$electron.remote.dialog.showOpenDialog()[0];
+      var image_string = new Buffer(fs.readFileSync(filepath), 'base64');
+      var image = new window.Image();
+      this.context.drawImage(image, 0, 0);
+
+      console.log(this.context);
       console.log(`LOAD ${filepath}`);
     },
 
