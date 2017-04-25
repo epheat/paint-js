@@ -5,7 +5,7 @@ Paint.js -->
 <template>
   <div class="tool-controllers">
     <template v-for="(value, key, index) in toolProperties">
-      <input class="brightness-slider" type="range" v-model="toolProperties[key]" min="0" max="99" > {{ key }} : {{ value }} <br>
+      <input class="brightness-slider" type="range" v-model="toolProperties[key]" min="1" max="99" > {{ key }} : {{ value }} <br>
     </template>
   </div>
 </template>
