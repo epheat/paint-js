@@ -56,6 +56,7 @@ export default {
       w: 500,
       h: 500,
       line_width: 2,
+      zoom: 1,
 
       undo_stack: [],
       redo_stack: []
@@ -80,7 +81,6 @@ export default {
 
   // Component methods
   methods: {
-
     mouseDown: function(e) {
 
       // right before any changes, save the state of the canvas for undo
@@ -410,15 +410,11 @@ if (e.which == 1) {
       this.context.putImageData(new_canvas, 0, 0);
     },
 
-    dataURItoFile: function(data_URI, filename) {
-      var arr = data_URI.split(','), mime = arr[0].match(/:(.*?);/)[1],
-        bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
-      while(n--) {
-        u8arr[n] = bstr.charCodeAt(n);
-      }
-      return new File([u8arr], filename, {type:mime});
+    drawCanvasImage: function(image) {
+      this.setCanvasDimensions(image.width/this.zoom, image.height/this.zoom);
+
     },
-    
+
     encodeFile: function(filepath) {
       var file = fs.readFileSync(filepath);
       return new Buffer(file).toString('base64');
@@ -549,8 +545,8 @@ if (e.which == 1) {
       this.stroke_canvas.width = w;
       this.stroke_canvas.height = h;
     }
-
   },
+
 
   computed: {
     resizer_positioning: function() {
