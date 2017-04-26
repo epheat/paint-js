@@ -25,7 +25,7 @@ it just doesn't show up. It is a forgiving API, but it expects you to do some ca
       @mousedown="beginResize" @mouseup="endResize">
     </a>
     <br>
-    prevX: {{prevX}} prevY: {{prevY}}   currX: {{currX}} currY: {{currY}}
+    X: {{currX}}   Y: {{currY}}
   </div>
 </template>
 
@@ -86,7 +86,7 @@ export default {
       // right before any changes, save the state of the canvas for undo
       this.saveCanvasToUndoStack();
 
-      // Mark file as changed. 
+      // Mark file as changed.
       if (this.changed_flag === false) {
         this.changed_flag = true;
       }
@@ -182,9 +182,13 @@ if (e.which == 1) {
         this.s_context.fillStyle = 'rgba(255, 255, 255, 255)';
         this.drawCircle(x, y, this.tool.properties.width/2);
       } else if (this.tool.name == "bucket") {
-        this.context.globalCompositeOperation = this.blendMode;
 
-        // TODO: call flood fill algorithm
+        var imgData = this.context.getImageData(x, y, 1, 1);
+        var color_dropped = { red: imgData.data[0], green: imgData.data[1], blue: imgData.data[2], alpha: imgData.data[3] };
+        var imgData2 = this.context.getImageData(0, 0, this.w, this.h);
+
+        this.flood_fill(x,y,color_dropped,draw_color,imgData2);
+        this.context.putImageData(imgData2,0,0);
 
       } else if (this.tool.name == "pen") {
         // set color blending option
@@ -254,6 +258,21 @@ if (e.which == 1) {
         }
       } else {
 
+      }
+    },
+
+    flood_fill: function (x,y,color_dropped, draw_color,imgData) {
+      var index = 4 * (imgData.width*y + x);
+      if (imgData.data[index] == color_dropped.red && imgData.data[index+1] == color_dropped.green && imgData.data[index+2] == color_dropped.blue && imgData.data[index+3] == color_dropped.alpha) {
+        imgData.data[index] = draw_color.red;
+        imgData.data[index+1] = draw_color.green;
+        imgData.data[index+2] = draw_color.blue;
+        imgData.data[index+3] = draw_color.alpha;
+
+        this.flood_fill(x+1,y,color_dropped,draw_color,imgData);
+        this.flood_fill(x-1,y,color_dropped,draw_color,imgData);
+        this.flood_fill(x,y+1,color_dropped,draw_color,imgData);
+        this.flood_fill(x,y-1,color_dropped,draw_color,imgData);
       }
     },
 
